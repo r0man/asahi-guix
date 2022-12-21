@@ -4,9 +4,9 @@
 
 WIP: Not much is working. 💣
 
-** Installer
+** Guix Installer
 
-Build the installation image.
+Build the Guix installation image.
 
 #+begin_src sh :results verbatim
   guix time-machine -C asahi/channels.scm -- system image -L . --image-type=efi-raw asahi/installer.scm
