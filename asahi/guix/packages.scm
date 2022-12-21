@@ -4,10 +4,14 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages xdisorg)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -133,6 +137,82 @@ Air, and MacBook Pro.")))
     (synopsis "Asahi Linux firmware extractor")
     (description "The Asahi Linux firmware extraction tool")
     (license license:expat)))
+
+(define-public libdrm-2-4-114
+  (package
+    (inherit libdrm)
+    (version "2.4.114")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://dri.freedesktop.org/libdrm/libdrm-"
+                    version ".tar.xz"))
+              (sha256
+               (base32
+                "09nhk3jx3qzggl5vyii3yh4zm0npjqsbxhzvxrg2xla77a2cyj9h"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments libdrm)
+       ((#:configure-flags flags)
+        `(list "-Dexynos=enabled"
+               "-Domap=enabled"
+               "-Detnaviv=enabled"
+               "-Dtegra=enabled"
+               "-Dfreedreno=enabled"
+               "-Dfreedreno-kgsl=true"))))
+    (inputs
+     `(("wayland-protocols" ,wayland-protocols-next)
+       ,@(package-inputs libdrm)))))
+
+(define-public mesa-asahi-edge
+  (let ((commit "01a8a3f3d6089d980e7ae56f6e631c8213f0e49d"))
+    (package
+      (inherit mesa)
+      (name "mesa-asahi-edge")
+      (version "23.0.0_pre20221219")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://gitlab.freedesktop.org/asahi/mesa/-/archive/"
+                             commit "/mesa-" commit ".tar.gz"))
+         (sha256
+          (base32 "1frgb87n3r86s02iw5szby5rgg8pc4dn3cwfcsfhn4sk42kz1hxq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments mesa)
+         ((#:configure-flags flags)
+          `(list "-Db_ndebug=true"
+                 "-Db_lto=false"
+                 "-Dplatforms=x11,wayland"
+                 "-Dgallium-drivers=swrast,virgl,kmsro,asahi"
+                 "-Dvulkan-drivers=swrast"
+                 "-Dvulkan-layers="
+                 "-Ddri3=enabled"
+                 "-Degl=enabled"
+                 "-Dgallium-extra-hud=true"
+                 "-Dgallium-opencl=disabled"
+                 "-Dgallium-rusticl=false"
+                 "-Dgallium-va=disabled"
+                 "-Dgallium-vdpau=disabled"
+                 "-Dgallium-xa=disabled"
+                 "-Dgbm=enabled"
+                 "-Dgles1=disabled"
+                 "-Dgles2=enabled"
+                 "-Dglvnd=true"
+                 "-Dglx=dri"
+                 "-Dlibunwind=disabled"
+                 "-Dllvm=enabled"
+                 ;; "-Dlmsensors=enabled"
+                 "-Dosmesa=true"
+                 "-Dshared-glapi=enabled"
+                 "-Dmicrosoft-clc=disabled"
+                 "-Dvalgrind=enabled"))))
+      (inputs
+       `(("libdrm" ,libdrm-2-4-114)
+         ("libglvnd" ,libglvnd)
+         ;; ("lm-sensors" ,lm-sensors)
+         ("openssl" ,libressl)
+         ("valgrind" ,valgrind)
+         ("wayland-protocols" ,wayland-protocols-next)
+         ,@(package-inputs mesa))))))
 
 (define-public asahi-scripts
   (package

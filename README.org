@@ -33,4 +33,5 @@ Status:
 - asahi-m1n1
 - asahi-scripts
 - lzfse
+- mesa-asahi-edge
 - u-boot-apple-m1
