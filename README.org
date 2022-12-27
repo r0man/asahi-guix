@@ -30,3 +30,4 @@ Status:
 - asahi-m1n1
 - asahi-scripts
 - lzfse
+- u-boot-apple-m1

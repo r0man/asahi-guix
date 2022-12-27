@@ -6,6 +6,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -14,6 +15,7 @@
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix transformations)
+  #:use-module (guix utils)
   #:use-module (nongnu packages linux)
   #:use-module (srfi srfi-1))
 
@@ -146,3 +148,25 @@ is a Lempel-Ziv style data compression algorithm using Finite State
 Entropy coding. It targets similar compression rates at higher
 compression and decompression speed compared to deflate using zlib")
     (license license:bsd-3)))
+
+(define-public u-boot-apple-m1
+  (let ((base (make-u-boot-package "apple_m1" "aarch64-linux-gnu")))
+    (package
+      (inherit base)
+      (version "2022.10-1")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append
+               "https://github.com/AsahiLinux/u-boot/archive/asahi-v"
+               version ".tar.gz"))
+         (sha256
+          (base32 "02x90h89p1kv3d29mdhq22a88m68w4m1cwb45gj0rr85i2z8mqjq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (delete 'disable-tools-libcrypto)))))
+      (inputs
+       `(("openssl" ,libressl)
+         ,@(package-inputs base))))))
