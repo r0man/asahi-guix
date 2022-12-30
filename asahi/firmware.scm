@@ -1,7 +1,8 @@
 (define-module (asahi firmware)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 textual-ports)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  #:export (mount-efi-system-partition))
 
 (define efi-system-partition-uuid-path
   "/proc/device-tree/chosen/asahi,efi-system-partition")
