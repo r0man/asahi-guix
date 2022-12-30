@@ -18,6 +18,31 @@
   #:use-module (nongnu packages linux)
   #:export (installation-os-nonfree))
 
+(define m1-modules
+  (list
+   ;; For NVMe & SMC
+   ;; "apple-mailbox"
+   ;; For NVMe
+   "nvme-apple"
+   ;; For USB and HID
+   "pinctrl-apple-gpio"
+   ;; SMC core
+   ;; "macsmc" "macsmc-rtkit"
+   ;; For USB
+   "i2c-apple" "tps6598x" "apple-dart" "dwc3" "dwc3-of-simple" "nvmem-apple-efuses"
+   "phy-apple-atc" "xhci-pci" "pcie-apple"
+   ;;"gpio_macsmc"
+   ;; For HID
+   "spi-apple" "spi-hid-apple" "spi-hid-apple-of"
+   ;; For RTC
+   "rtc-macsmc" "simple-mfd-spmi"
+   ;; "spmi-apple-controller"
+   "nvmem_spmi_mfd"
+   ;; For MTP HID
+   "apple-dockchannel" "dockchannel-hid"
+   ;; "apple-rtkit-helper"
+   ))
+
 (define installation-os-nonfree
   (operating-system
     (inherit installation-os)
@@ -26,19 +51,20 @@
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
-    (initrd-modules '("usb-storage"
-                      "uas"
-                      "usbhid"
-                      "hid-apple"
-                      "dm-crypt"
-                      "serpent_generic"
-                      "wp512"
-                      "nls_iso8859-1"
-                      "virtio_pci"
-                      "virtio_balloon"
-                      "virtio_blk"
-                      "virtio_net"
-                      "virtio-rng"))
+    (initrd-modules (append m1-modules
+                            '("usb-storage"
+                              "uas"
+                              "usbhid"
+                              "hid-apple"
+                              "dm-crypt"
+                              "serpent_generic"
+                              "wp512"
+                              "nls_iso8859-1"
+                              "virtio_pci"
+                              "virtio_balloon"
+                              "virtio_blk"
+                              "virtio_net"
+                              "virtio-rng")))
 
     ;; Add the 'net.ifnames' argument to prevent network interfaces
     ;; from having really long names.  This can cause an issue with

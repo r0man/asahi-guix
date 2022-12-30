@@ -15,12 +15,13 @@ Build the Guix installation image.
 Write the installer to the USB stick at =/dev/sda=.
 
 #+begin_src sh :results verbatim
-  sudo dd if=/gnu/store/8ikx00fz1pdcnb68w2gj2jq3868zx96h-disk-image of=/dev/sda bs=4M status=progress oflag=sync
+  sudo dd if=/gnu/store/mddmv1mrwln08q3nl5sg7czxd06jws0p-disk-image of=/dev/sda bs=4M status=progress oflag=sync
 #+end_src
 
 Status:
-- Trying to compile any initrd module fails
-- Boots Grub and Guile, but fails to find disks.
+- Keyboard works
+- Boots Grub and Guile
+- Fails to find disks?
 
 ** Packages
 
