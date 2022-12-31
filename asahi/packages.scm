@@ -31,7 +31,7 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/r0man/asahi-guix.git")
-             (commit "8070d3a37e7d5a8a0ba5c82284ecffce57e24d96")))
+             (commit "b7d3c8088ff0a369860a54a6188812359a2b36f9")))
        (sha256
         (base32 "1hgbq7ph2pr6swrimzy2zis5rn3pwjdzispa5c711zsvg35a9czp"))))
     (build-system guile-build-system)
@@ -41,8 +41,7 @@
          (add-after 'unpack 'delete-files
            (lambda _
              (delete-file "asahi/installer.scm")
-             (delete-file "asahi/initrd.scm")
-             (delete-file "asahi/packages.scm"))))))
+             (delete-file "asahi/initrd.scm"))))))
     (native-inputs
      (list guile-3.0-latest guix))
     (home-page "https://github.com/r0man/asahi-guix")
