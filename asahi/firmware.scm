@@ -45,7 +45,7 @@
     (when esp-uuid
       (format #t "EFI System partition UUID: ~a\n" esp-uuid)
       (format #t "Mounting ~a to ~a ...\n" esp-uuid mount-point)
-      (mount (format #f "PARTUUID=~a" esp-uuid) mount-point "ext4"))
+      (mount (format #f "/dev/disk/by-uuid/~a" esp-uuid) mount-point "ext4"))
     (let ((device (find-mount-point (mount-points) mount-point)))
       (if device
           (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
