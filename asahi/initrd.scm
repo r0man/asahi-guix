@@ -55,7 +55,7 @@
   (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
-   (with-extensions (list (asahi-guix))
+   (with-extensions (list asahi-guix)
      (with-imported-modules (source-module-closure
                              '((asahi firmware)
                                (gnu build linux-boot)
