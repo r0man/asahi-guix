@@ -20,13 +20,10 @@
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
-                       (helper-packages (list asahi-guix))
+                       (helper-packages '())
                        qemu-networking?
                        volatile-root?
                        (on-error 'debug))
-
-  (format #t "LINUX: ~a\n" linux)
-  (format #t "HELPER: ~a\n" helper-packages)
 
   (define device-mapping-commands
     ;; List of gexps to open the mapped devices.
@@ -50,6 +47,12 @@
 
   (define kodir
     (flat-linux-module-directory linux linux-modules))
+
+  (format #t "LINUX: ~a\n" linux)
+  (format #t "HELPER: ~a\n" helper-packages)
+  (format #t "FILE SYSTEMS: ~a\n" file-systems)
+  (format #t "MAPPED DEVICES: ~a\n" mapped-devices)
+  (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
    (with-extensions (list asahi-guix)
