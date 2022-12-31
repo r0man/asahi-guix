@@ -1,5 +1,6 @@
 (define-module (asahi installer)
   #:use-module (asahi firmware)
+  #:use-module (asahi initrd)
   #:use-module (asahi packages)
   #:use-module (gnu system linux-initrd)
   #:use-module (gnu bootloader)
@@ -66,6 +67,14 @@
     "virtio_net"
     "virtio-rng"))
 
+(define pre-mount
+  (with-imported-modules (source-module-closure
+                          '((asahi firmware)))
+    #~(begin
+        (display "PRE MOUNT\n")
+        (use-modules (asahi firmware))
+        (mount-efi-system-partition "/run/.system-efi"))))
+
 (define installation-os-nonfree
   (operating-system
     (inherit installation-os)
@@ -74,20 +83,15 @@
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
-
-    (initrd (lambda (file-systems . rest)
-              ;; Create a standard initrd but set up networking
-              ;; with the parameters QEMU expects by default.
-              (apply raw-initrd file-systems
-                     #:pre-mount (with-imported-modules (source-module-closure
-                                                         '((asahi firmware)))
-                                   #~(begin
-                                       (display "PRE MOUNT\n")
-                                       (use-modules (asahi firmware))
-                                       (mount-efi-system-partition "/run/.system-efi")))
-                     #:linux-modules modules
-                     ;; #:qemu-networking? #t
-                     rest)))
+    (initrd asahi-initrd)
+    ;; (initrd (lambda (file-systems . rest)
+    ;;           ;; Create a standard initrd but set up networking
+    ;;           ;; with the parameters QEMU expects by default.
+    ;;           (apply raw-initrd file-systems
+    ;;                  #:pre-mount pre-mount
+    ;;                  #:linux-modules modules
+    ;;                  ;; #:qemu-networking? #t
+    ;;                  rest)))
 
     (initrd-modules modules)
 
