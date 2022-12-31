@@ -31,9 +31,9 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/r0man/asahi-guix.git")
-             (commit "b7d3c8088ff0a369860a54a6188812359a2b36f9")))
+             (commit "241df2a93a9507b0e77480cc15b0480ef7d14e02")))
        (sha256
-        (base32 "1hgbq7ph2pr6swrimzy2zis5rn3pwjdzispa5c711zsvg35a9czp"))))
+        (base32 "1g6kv4npzys6qs20y5ka90kplf2br7n7h5k44a0y7ybck4r65jwb"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
