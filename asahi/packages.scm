@@ -25,7 +25,7 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "f1f89e581f1d7907b6b32de7a2a944f96b15dcdd")
+    (version "7e8b152da5c225ce97651d6eacc8b9bd7a8431c3")
     (source
      (origin
        (method git-fetch)
@@ -33,14 +33,14 @@
              (url "https://github.com/r0man/asahi-guix.git")
              (commit version)))
        (sha256
-        (base32 "1zn56zk5f9m01qk2q2qqscqm3svi3krcf5m7ar72if0asyghc9qc"))))
+        (base32 "0vak0anmczlggjjllw872imf866kvlils5i9hyly3fkc1yrfc6wv"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-files
            (lambda _
-             (mkdir-p "1zn56zk5f9m01qk2q2qqscqm3svi3krcf5m7ar72if0asyghc9qc")
+             (mkdir-p "x")
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm"))))))
     (native-inputs
