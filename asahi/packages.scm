@@ -6,6 +6,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -19,7 +20,6 @@
   #:use-module (guix packages)
   #:use-module (guix transformations)
   #:use-module (guix utils)
-  #:use-module (nongnu packages linux)
   #:use-module (srfi srfi-1))
 
 (define-public asahi-guix
@@ -31,9 +31,9 @@
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/r0man/asahi-guix.git")
-             (commit "c9d0cda105516865a4923d56f391cabd6044a216")))
+             (commit "8070d3a37e7d5a8a0ba5c82284ecffce57e24d96")))
        (sha256
-        (base32 "06787whgx6rkyqnz7rzgal2qdyx336vjnkkdf47lv2869si8xlza"))))
+        (base32 "1hgbq7ph2pr6swrimzy2zis5rn3pwjdzispa5c711zsvg35a9czp"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
@@ -41,9 +41,10 @@
          (add-after 'unpack 'delete-files
            (lambda _
              (delete-file "asahi/installer.scm")
+             (delete-file "asahi/initrd.scm")
              (delete-file "asahi/packages.scm"))))))
     (native-inputs
-     (list guile-3.0 guix))
+     (list guile-3.0-latest guix))
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")
@@ -51,7 +52,15 @@
 
 (define (make-asahi-linux name config)
   (package
-    (inherit linux-arm64-generic)
+    (inherit
+     (customize-linux
+      #:name name
+      #:source (origin
+                 (method url-fetch)
+                 (uri (string-append "https://github.com/AsahiLinux/linux/archive/"
+                                     "refs/tags/asahi-" version ".tar.gz"))
+                 (sha256
+                  (base32 "0fnaqih8k7ri6fqaghhh7lyfylf8nj559xqa7qs6fla6isxa0cnf")))))
     (name name)
     (version "6.2-rc2-1")
     (source
@@ -64,7 +73,7 @@
     (native-inputs
      `(("kconfig" ,config)
        ("zstd" ,zstd)
-       ,@(alist-delete "kconfig" (package-native-inputs linux-arm64-generic))))
+       ,@(alist-delete "kconfig" (package-native-inputs linux-libre-arm64-generic))))
     (home-page "https://asahilinux.org")
     (synopsis "Linux on Apple Silicon")
     (description "Asahi Linux is a project and community with the goal of porting Linux
