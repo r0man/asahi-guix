@@ -1,4 +1,6 @@
 (define-module (asahi firmware)
+  #:use-module (guix build syscalls)
+  #:use-module (guix build utils)
   #:use-module (ice-9 pretty-print)
   #:use-module (ice-9 textual-ports)
   #:use-module (srfi srfi-1)
@@ -32,15 +34,22 @@
       (string-trim-right content #\nul))))
 
 (define (mount-efi-system-partition mount-point)
+  (mkdir-p mount-point)
+  (while (find-mount-point (mount-points) mount-point)
+    (format #t "Unmounting ~a ...\n" mount-point)
+    (umount mount-point)
+    (format #t "Unmounted ~a\n" mount-point))
   (format #t "Mounting EFI system partition ...\n")
   (let ((boot-path (boot-mount-path))
-        (esp-uuid (read-efi-system-partition-uuid efi-system-partition-uuid-path))
-        (device (find-mount-point (mount-points) mount-point)))
-    (format #t "Boot path: ~a\n" boot-path)
-    (format #t "EFI System partition UUID: ~a\n" esp-uuid)
-    (if device
-        (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
-        (format #t "System ESP not mounted."))))
+        (esp-uuid (read-efi-system-partition-uuid efi-system-partition-uuid-path)))
+    (when esp-uuid
+      (format #t "EFI System partition UUID: ~a\n" esp-uuid)
+      (format #t "Mounting ~a to ~a ...\n" esp-uuid mount-point)
+      (mount (format #f "PARTUUID=~a" esp-uuid) mount-point "ext4"))
+    (let ((device (find-mount-point (mount-points) mount-point)))
+      (if device
+          (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
+          (format #t "System ESP not mounted.")))))
 
 ;; (pretty-print (mount-points))
 ;; (mount-efi-system-partition "/run/.system-efi")
