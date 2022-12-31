@@ -112,7 +112,7 @@
 
     ;; Add some extra packages useful for the installation process
     (packages
-     (append (list asahi-guix git curl emacs-next)
+     (append (list asahi-guix git curl)
              (operating-system-packages installation-os)))))
 
 installation-os-nonfree
