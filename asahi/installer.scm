@@ -67,13 +67,13 @@
     "virtio_net"
     "virtio-rng"))
 
-(define pre-mount
-  (with-imported-modules (source-module-closure
-                          '((asahi firmware)))
-    #~(begin
-        (display "PRE MOUNT\n")
-        (use-modules (asahi firmware))
-        (mount-efi-system-partition "/run/.system-efi"))))
+;; (define pre-mount
+;;   (with-imported-modules (source-module-closure
+;;                           '((asahi firmware)))
+;;     #~(begin
+;;         (display "PRE MOUNT\n")
+;;         (use-modules (asahi firmware))
+;;         (mount-efi-system-partition "/run/.system-efi"))))
 
 (define installation-os-nonfree
   (operating-system
@@ -112,7 +112,7 @@
 
     ;; Add some extra packages useful for the installation process
     (packages
-     (append (list git curl emacs-next)
+     (append (list asahi-guix git curl emacs-next)
              (operating-system-packages installation-os)))))
 
 installation-os-nonfree
