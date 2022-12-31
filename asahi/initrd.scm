@@ -1,5 +1,6 @@
 (define-module (asahi initrd)
   #:use-module (asahi firmware)
+  #:use-module (asahi packages)
   #:use-module (gnu packages linux)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
@@ -19,10 +20,13 @@
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
-                       (helper-packages '())
+                       (helper-packages '(asahi-guix))
                        qemu-networking?
                        volatile-root?
                        (on-error 'debug))
+
+  (format #t "LINUX: ~a\n" linux)
+  (format #t "HELPER: ~a\n" helper-packages)
 
   (define device-mapping-commands
     ;; List of gexps to open the mapped devices.
