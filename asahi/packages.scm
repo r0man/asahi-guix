@@ -25,13 +25,13 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "0.0.1")
+    (version "8ccce5a14b4db8ca76c02763133d352c07adaa37")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/r0man/asahi-guix.git")
-             (commit "241df2a93a9507b0e77480cc15b0480ef7d14e02")))
+             (commit version)))
        (sha256
         (base32 "1g6kv4npzys6qs20y5ka90kplf2br7n7h5k44a0y7ybck4r65jwb"))))
     (build-system guile-build-system)
