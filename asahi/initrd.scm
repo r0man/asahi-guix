@@ -20,7 +20,7 @@
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
-                       (helper-packages '(asahi-guix))
+                       (helper-packages (list asahi-guix))
                        qemu-networking?
                        volatile-root?
                        (on-error 'debug))
@@ -52,48 +52,49 @@
     (flat-linux-module-directory linux linux-modules))
 
   (expression->initrd
-   (with-imported-modules (source-module-closure
-                           '((asahi firmware)
-                             (gnu build linux-boot)
-                             (guix build utils)
-                             (guix build bournish)
-                             (gnu system file-systems)
-                             (gnu build file-systems)))
-     #~(begin
-         (use-modules (asahi firmware)
-                      (gnu build linux-boot)
-                      (gnu system file-systems)
-                      ((guix build utils) #:hide (delete))
-                      (guix build bournish)   ;add the 'bournish' meta-command
-                      (srfi srfi-1)           ;for lvm-device-mapping
-                      (srfi srfi-26)
+   (with-extensions (list asahi-guix)
+     (with-imported-modules (source-module-closure
+                             '((asahi firmware)
+                               (gnu build linux-boot)
+                               (guix build utils)
+                               (guix build bournish)
+                               (gnu system file-systems)
+                               (gnu build file-systems)))
+       #~(begin
+           (use-modules (asahi firmware)
+                        (gnu build linux-boot)
+                        (gnu system file-systems)
+                        ((guix build utils) #:hide (delete))
+                        (guix build bournish)   ;add the 'bournish' meta-command
+                        (srfi srfi-1)           ;for lvm-device-mapping
+                        (srfi srfi-26)
 
-                      ;; FIXME: The following modules are for
-                      ;; LUKS-DEVICE-MAPPING.  We should instead propagate
-                      ;; this info via gexps.
-                      ((gnu build file-systems)
-                       #:select (find-partition-by-luks-uuid))
-                      (rnrs bytevectors))
+                        ;; FIXME: The following modules are for
+                        ;; LUKS-DEVICE-MAPPING.  We should instead propagate
+                        ;; this info via gexps.
+                        ((gnu build file-systems)
+                         #:select (find-partition-by-luks-uuid))
+                        (rnrs bytevectors))
 
-         (with-output-to-port (%make-void-port "w")
-           (lambda ()
-             (set-path-environment-variable "PATH" '("bin" "sbin")
-                                            '#$helper-packages)))
+           (with-output-to-port (%make-void-port "w")
+             (lambda ()
+               (set-path-environment-variable "PATH" '("bin" "sbin")
+                                              '#$helper-packages)))
 
-         (parameterize ((current-warning-port (%make-void-port "w")))
-           (boot-system #:mounts
-                        (map spec->file-system
-                             '#$(map file-system->spec file-systems))
-                        #:pre-mount (lambda ()
-                                      (mount-efi-system-partition "/run/.system-efi")
-                                      (and #$pre-mount
-                                           #$@device-mapping-commands
-                                           #$@file-system-scan-commands))
-                        #:linux-modules '#$linux-modules
-                        #:linux-module-directory '#$kodir
-                        #:keymap-file #+(and=> keyboard-layout
-                                               keyboard-layout->console-keymap)
-                        #:qemu-guest-networking? #$qemu-networking?
-                        #:volatile-root? '#$volatile-root?
-                        #:on-error '#$on-error))))
+           (parameterize ((current-warning-port (%make-void-port "w")))
+             (boot-system #:mounts
+                          (map spec->file-system
+                               '#$(map file-system->spec file-systems))
+                          #:pre-mount (lambda ()
+                                        (mount-efi-system-partition "/run/.system-efi")
+                                        (and #$pre-mount
+                                             #$@device-mapping-commands
+                                             #$@file-system-scan-commands))
+                          #:linux-modules '#$linux-modules
+                          #:linux-module-directory '#$kodir
+                          #:keymap-file #+(and=> keyboard-layout
+                                                 keyboard-layout->console-keymap)
+                          #:qemu-guest-networking? #$qemu-networking?
+                          #:volatile-root? '#$volatile-root?
+                          #:on-error '#$on-error)))))
    #:name "asahi-initrd"))
