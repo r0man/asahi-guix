@@ -3,12 +3,15 @@
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -18,6 +21,33 @@
   #:use-module (guix utils)
   #:use-module (nongnu packages linux)
   #:use-module (srfi srfi-1))
+
+(define-public asahi-guix
+  (package
+    (name "asahi-guix")
+    (version "0.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/r0man/asahi-guix.git")
+             (commit "c9d0cda105516865a4923d56f391cabd6044a216")))
+       (sha256
+        (base32 "06787whgx6rkyqnz7rzgal2qdyx336vjnkkdf47lv2869si8xlza"))))
+    (build-system guile-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'delete-files
+           (lambda _
+             (delete-file "asahi/installer.scm")
+             (delete-file "asahi/packages.scm"))))))
+    (native-inputs
+     (list guile-3.0 guix))
+    (home-page "https://github.com/r0man/asahi-guix")
+    (synopsis "Asahi Guix")
+    (description "Asahi Guix Guile package")
+    (license license:expat)))
 
 (define (make-asahi-linux name config)
   (package
