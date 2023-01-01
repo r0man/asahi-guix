@@ -47,7 +47,7 @@
     (when esp-uuid
       (format #t "EFI System partition UUID: ~a\n" (uuid->string esp-uuid))
       (format #t "Mounting ~a to ~a ...\n" (uuid->string esp-uuid) mount-point)
-      (let ((partition (find-partition-by-uuid (uuid-bytevector esp-uuid))))
+      (let ((partition (find-partition-by-uuid esp-uuid)))
         (if partition
             (mount partition mount-point "ext4")
             (format #t "Can't find partition for UUID: ~a\n" (uuid->string esp-uuid)))))
