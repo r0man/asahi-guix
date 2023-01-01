@@ -1,4 +1,6 @@
 (define-module (asahi firmware)
+  #:use-module (gnu build file-systems)
+  #:use-module (gnu system uuid)
   #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (ice-9 pretty-print)
@@ -31,7 +33,7 @@
 (define (read-efi-system-partition-uuid path)
   (when (file-exists? path)
     (let ((content (call-with-input-file path get-string-all)))
-      (string-trim-right content #\nul))))
+      (uuid (string-trim-right content #\nul)))))
 
 (define (mount-efi-system-partition mount-point)
   (mkdir-p mount-point)
@@ -43,9 +45,12 @@
   (let ((boot-path (boot-mount-path))
         (esp-uuid (read-efi-system-partition-uuid efi-system-partition-uuid-path)))
     (when esp-uuid
-      (format #t "EFI System partition UUID: ~a\n" esp-uuid)
-      (format #t "Mounting ~a to ~a ...\n" esp-uuid mount-point)
-      (mount (format #f "UUID=~a" esp-uuid) mount-point "ext4"))
+      (format #t "EFI System partition UUID: ~a\n" (uuid->string esp-uuid))
+      (format #t "Mounting ~a to ~a ...\n" (uuid->string esp-uuid) mount-point)
+      (let ((partition (find-partition-by-uuid (uuid-bytevector esp-uuid))))
+        (if partition
+            (mount partition mount-point "ext4")
+            (format #t "Can't find partition for UUID: ~a\n" (uuid->string esp-uuid)))))
     (let ((device (find-mount-point (mount-points) mount-point)))
       (if device
           (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
@@ -53,3 +58,7 @@
 
 ;; (pretty-print (mount-points))
 ;; (mount-efi-system-partition "/run/.system-efi")
+;; (find-partition-by-uuid "a6543bf9-56ee-4354-aa7b-dc357c7d0d34")
+;; (find-partition-by-uuid (uuid "a6543bf9-56ee-4354-aa7b-dc357c7d0d34"))
+;; (find-partition-by-uuid (uuid-bytevector (uuid "a6543bf9-56ee-4354-aa7b-dc357c7d0d34")))
+;; (uuid->string (uuid "a6543bf9-56ee-4354-aa7b-dc357c7d0d34"))
