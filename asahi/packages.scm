@@ -25,14 +25,14 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "97b3aa8330e2565e17e307f2341298dadbf7422a")
+    (version "27e992df37f11ccae76befac169272bda763333e")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "065m9b3a52dg0zp5np872hsz5hn5j4cc13b35d2254x69ckrxqam"))))
+        (base32 "1g8635fxdcz12p1djv2g13aqg8hv44ii0nb8288fwlklsfahawxq"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
