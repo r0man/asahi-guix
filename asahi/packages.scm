@@ -23,15 +23,6 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
-(define-public guile-util-linux
-  (package
-    (inherit util-linux)
-    (name "guile-util-linux")
-    (native-search-paths
-     (list (search-path-specification
-            (variable "GUILE_EXTENSIONS_PATH")
-            (files '("lib")))))))
-
 (define-public asahi-guix
   (package
     (name "asahi-guix")
@@ -52,9 +43,16 @@
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm"))))))
     (inputs
-     (list guile-bytestructures `(,guile-util-linux "lib")))
+     (list guile-bytestructures
+           `(,(package
+                (inherit util-linux)
+                (native-search-paths
+                 (list (search-path-specification
+                        (variable "GUILE_EXTENSIONS_PATH")
+                        (files '("lib"))))))
+             "lib")))
     (native-inputs
-     (list coreutils guile-3.0/fixed guix))
+     (list guile-3.0/fixed guix))
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")
