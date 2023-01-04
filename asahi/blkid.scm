@@ -139,4 +139,4 @@
          (cons device (probe-device device)))
        devices))
 
-(pretty-print (probe-devices '("/dev/nvme0n1" "/dev/sda")))
+;; (pretty-print (probe-devices '("/dev/nvme0n1" "/dev/sda")))
