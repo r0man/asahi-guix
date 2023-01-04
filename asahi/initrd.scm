@@ -1,6 +1,7 @@
 (define-module (asahi initrd)
   #:use-module (asahi firmware)
   #:use-module (asahi packages)
+  #:use-module (gnu build linux-modules)
   #:use-module (gnu packages linux)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
@@ -58,11 +59,12 @@
    (with-extensions (list asahi-guix)
      (with-imported-modules (source-module-closure
                              '((asahi firmware)
+                               (gnu build file-systems)
                                (gnu build linux-boot)
-                               (guix build utils)
-                               (guix build bournish)
+                               (gnu build linux-modules)
                                (gnu system file-systems)
-                               (gnu build file-systems)))
+                               (guix build bournish)
+                               (guix build utils)))
        #~(begin
            (use-modules (asahi firmware)
                         (gnu build linux-boot)
@@ -71,7 +73,7 @@
                         (guix build bournish)   ;add the 'bournish' meta-command
                         (srfi srfi-1)           ;for lvm-device-mapping
                         (srfi srfi-26)
-
+                        (gnu build linux-modules)
                         ;; FIXME: The following modules are for
                         ;; LUKS-DEVICE-MAPPING.  We should instead propagate
                         ;; this info via gexps.
@@ -79,7 +81,7 @@
                          #:select (find-partition-by-luks-uuid))
                         (rnrs bytevectors))
 
-           (display ":: Asahi: Triggering early load of NVMe modules...")
+           (display ":: Asahi: Triggering early load of NVMe modules...\n")
            (load-linux-modules-from-directory '("apple-mailbox" "nvme-apple") '#$kodir)
 
            (with-output-to-port (%make-void-port "w")
