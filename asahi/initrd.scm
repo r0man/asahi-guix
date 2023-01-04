@@ -78,6 +78,7 @@
                         (srfi srfi-26)
                         (gnu build linux-modules)
                         (ice-9 exceptions)
+                        (ice-9 pretty-print)
                         ;; FIXME: The following modules are for
                         ;; LUKS-DEVICE-MAPPING.  We should instead propagate
                         ;; this info via gexps.
