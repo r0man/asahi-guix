@@ -7,7 +7,6 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -26,31 +25,34 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "27e992df37f11ccae76befac169272bda763333e")
+    (version "daf38d8eb06d604a6bade238590f55e04aa8cf58")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "1g8635fxdcz12p1djv2g13aqg8hv44ii0nb8288fwlklsfahawxq"))))
+        (base32 "182p0pzgz53v36wq0k8dvjl4cpx64lzhw5wmndzw73k5xib5lkkf"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-files
            (lambda _
-             (mkdir-p "x")
              (delete-file "asahi/installer.scm")
-             (delete-file "asahi/initrd.scm"))))))
+             (delete-file "asahi/initrd.scm")))
+         (add-before 'build 'set-guix-extensions-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((util-linux (assoc-ref inputs "util-linux")))
+               (setenv "GUIX_EXTENSIONS_PATH" (string-append util-linux "/lib"))))))))
     (inputs
-     (list util-linux))
+     (list `(,util-linux "lib")))
     (native-inputs
-     ;; (list %guile-static-stripped guix)
-     (list guile-3.0/fixed guix
-           ;; (modify-inputs (package-inputs guix)
-           ;;   (replace "guile" guile-3.0/fixed))
-           ))
+     (list guile-3.0/fixed guix))
+    ;; (native-search-paths
+    ;;  (list (search-path-specification
+    ;;         (variable "GUIX_EXTENSIONS_PATH")
+    ;;         (files (list "lib")))))
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")
