@@ -48,11 +48,11 @@
   (define kodir
     (flat-linux-module-directory linux linux-modules))
 
-  (format #t "LINUX: ~a\n" linux)
-  (format #t "HELPER: ~a\n" helper-packages)
-  (format #t "FILE SYSTEMS: ~a\n" file-systems)
-  (format #t "MAPPED DEVICES: ~a\n" mapped-devices)
-  (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
+  ;; (format #t "LINUX: ~a\n" linux)
+  ;; (format #t "HELPER: ~a\n" helper-packages)
+  ;; (format #t "FILE SYSTEMS: ~a\n" file-systems)
+  ;; (format #t "MAPPED DEVICES: ~a\n" mapped-devices)
+  ;; (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
    (with-extensions (list asahi-guix)
