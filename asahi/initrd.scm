@@ -79,6 +79,9 @@
                          #:select (find-partition-by-luks-uuid))
                         (rnrs bytevectors))
 
+           (display ":: Asahi: Triggering early load of NVMe modules...")
+           (load-linux-modules-from-directory '("apple-mailbox" "nvme-apple") '#$kodir)
+
            (with-output-to-port (%make-void-port "w")
              (lambda ()
                (set-path-environment-variable "PATH" '("bin" "sbin")

@@ -1,4 +1,5 @@
 (define-module (asahi firmware)
+  #:use-module (asahi blkid)
   #:use-module (gnu build file-systems)
   #:use-module (gnu system uuid)
   #:use-module (guix build syscalls)
@@ -17,6 +18,9 @@
          "/boot/efi")
         ((file-exists? "/boot/m1n1")
          "/boot")))
+
+(define (disk-devices)
+  (map (lambda (device) (format #f "/dev/~a" device)) (disk-partitions)))
 
 (define (mount-points)
   "Return the mount points from /proc/mounts."
@@ -41,6 +45,10 @@
     (format #t "Unmounting ~a ...\n" mount-point)
     (umount mount-point)
     (format #t "Unmounted ~a\n" mount-point))
+
+  (format #t "Probing block devices ...\n")
+  (pretty-print (probe-devices (disk-devices)))
+
   (format #t "Mounting EFI system partition ...\n")
   (let ((boot-path (boot-mount-path))
         (esp-uuid (read-efi-system-partition-uuid efi-system-partition-uuid-path)))
