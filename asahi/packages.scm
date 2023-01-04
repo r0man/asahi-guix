@@ -1,12 +1,13 @@
 (define-module (asahi packages)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (gnu packages make-bootstrap)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages make-bootstrap)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
@@ -22,33 +23,44 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
+(define-public guile-util-linux
+  (package
+    (inherit util-linux)
+    (name "guile-util-linux")
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files '("lib")))))))
+
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "77cd0c10e6de373f7f419c2c748bc29ce7a1b190")
+    (version "a634d2b8f4fd6513b0a2a8b75cb971402718c33c")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "1i7zwfz2w9k1357lfr9q18dy0rycg8v97n363f730p1sixfwi0qc"))))
+        (base32 "0k4f93jlbk2wy4q8i0651waz3nmmxgb1r4iwsx81kpbgqqqkl88k"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'delete-files
            (lambda _
+             (invoke "env")
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm")))
-         (add-before 'configure 'set-guix-extensions-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((util-linux (assoc-ref inputs "util-linux")))
-               (setenv "GUIX_EXTENSIONS_PATH" (string-append util-linux "/lib"))))))))
+         ;; (add-before 'configure 'set-guix-extensions-path
+         ;;   (lambda* (#:key inputs #:allow-other-keys)
+         ;;     (let ((util-linux (assoc-ref inputs "util-linux")))
+         ;;       (setenv "GUIX_EXTENSIONS_PATH" (string-append util-linux "/lib")))))
+         )))
     (inputs
-     (list guile-bytestructures `(,util-linux "lib")))
+     (list guile-bytestructures `(,guile-util-linux "lib")))
     (native-inputs
-     (list guile-3.0/fixed guix))
+     (list coreutils guile-3.0/fixed guix))
     ;; (native-search-paths
     ;;  (list (search-path-specification
     ;;         (variable "GUIX_EXTENSIONS_PATH")
