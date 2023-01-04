@@ -9,6 +9,8 @@
   #:use-module (gnu system mapped-devices)
   #:use-module (guix gexp)
   #:use-module (guix modules)
+  #:use-module (ice-9 exceptions)
+  #:use-module (ice-9 pretty-print)
   #:export (asahi-initrd))
 
 (define flat-linux-module-directory
@@ -64,7 +66,8 @@
                                (gnu build linux-modules)
                                (gnu system file-systems)
                                (guix build bournish)
-                               (guix build utils)))
+                               (guix build utils)
+                               (ice-9 exceptions)))
        #~(begin
            (use-modules (asahi firmware)
                         (gnu build linux-boot)
@@ -74,15 +77,13 @@
                         (srfi srfi-1)           ;for lvm-device-mapping
                         (srfi srfi-26)
                         (gnu build linux-modules)
+                        (ice-9 exceptions)
                         ;; FIXME: The following modules are for
                         ;; LUKS-DEVICE-MAPPING.  We should instead propagate
                         ;; this info via gexps.
                         ((gnu build file-systems)
                          #:select (find-partition-by-luks-uuid))
                         (rnrs bytevectors))
-
-           (display ":: Asahi: Triggering early load of NVMe modules...\n")
-           (load-linux-modules-from-directory '("apple-mailbox" "nvme-apple") '#$kodir)
 
            (with-output-to-port (%make-void-port "w")
              (lambda ()
@@ -94,7 +95,15 @@
                           (map spec->file-system
                                '#$(map file-system->spec file-systems))
                           #:pre-mount (lambda ()
-                                        (mount-efi-system-partition "/run/.system-efi")
+                                        (guard (ex (else (format #t ":: Asahi: Pre mount error:\n")
+                                                         (pretty-print ex)
+                                                         #f))
+
+                                          (display ":: Asahi: Mounting EFI system partition ...\n")
+                                          (mount-efi-system-partition "/run/.system-efi")
+
+                                          (display ":: Asahi: Triggering early load of NVMe modules ...\n")
+                                          (load-linux-modules-from-directory '("apple-mailbox" "nvme-apple") '#$kodir))
                                         (and #$pre-mount
                                              #$@device-mapping-commands
                                              #$@file-system-scan-commands))

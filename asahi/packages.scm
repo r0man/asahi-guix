@@ -1,5 +1,6 @@
 (define-module (asahi packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages make-bootstrap)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
@@ -45,7 +46,11 @@
     (inputs
      (list util-linux))
     (native-inputs
-     (list guile-3.0-latest guix))
+     ;; (list %guile-static-stripped guix)
+     (list guile-3.0/fixed guix
+           ;; (modify-inputs (package-inputs guix)
+           ;;   (replace "guile" guile-3.0/fixed))
+           ))
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")

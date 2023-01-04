@@ -15,7 +15,7 @@ Build the Guix installation image.
 Write the installer to the USB stick at =/dev/sda=.
 
 #+begin_src sh :results verbatim
-  sudo dd if=/gnu/store/0nwnhav5ys1fri26s0bqaq2c7kylbk3y-disk-image of=/dev/sda bs=4M status=progress oflag=sync
+  sudo dd if=/gnu/store/53rf5ynzd6r2a3lf4jqdhbjnh7i94ch0-disk-image of=/dev/sda bs=4M status=progress oflag=sync
 #+end_src
 
 Status:
