@@ -42,6 +42,8 @@
              (mkdir-p "x")
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm"))))))
+    (inputs
+     (list util-linux))
     (native-inputs
      (list guile-3.0-latest guix))
     (home-page "https://github.com/r0man/asahi-guix")
