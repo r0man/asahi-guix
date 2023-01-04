@@ -25,14 +25,14 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "daf38d8eb06d604a6bade238590f55e04aa8cf58")
+    (version "77cd0c10e6de373f7f419c2c748bc29ce7a1b190")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "182p0pzgz53v36wq0k8dvjl4cpx64lzhw5wmndzw73k5xib5lkkf"))))
+        (base32 "1i7zwfz2w9k1357lfr9q18dy0rycg8v97n363f730p1sixfwi0qc"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
@@ -41,12 +41,12 @@
            (lambda _
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm")))
-         (add-before 'build 'set-guix-extensions-path
+         (add-before 'configure 'set-guix-extensions-path
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((util-linux (assoc-ref inputs "util-linux")))
                (setenv "GUIX_EXTENSIONS_PATH" (string-append util-linux "/lib"))))))))
     (inputs
-     (list `(,util-linux "lib")))
+     (list guile-bytestructures `(,util-linux "lib")))
     (native-inputs
      (list guile-3.0/fixed guix))
     ;; (native-search-paths

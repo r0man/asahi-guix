@@ -2,14 +2,16 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructures guile)
   #:use-module (ice-9 pretty-print)
+  #:use-module (srfi srfi-19)
   #:use-module (srfi srfi-42)
   #:use-module (system foreign-library)
   #:export (probe-device probe-devices))
 
-(define dev_t int)
-(define mode_t int)
-(define uint int)
-(define uint64_t uint64)
+(eval-when (expand load eval)
+  (define dev_t int)
+  (define mode_t int)
+  (define uint int)
+  (define uint64_t uint64))
 
 ;; Use #:search-path ?
 ;; (setenv "GUILE_EXTENSIONS_PATH" "/gnu/store/yg4l52c2hrxrnpfq23krjv8jgazhb9xd-util-linux-2.37.2-lib/lib")
@@ -49,31 +51,33 @@
 
 ;; https://github.com/alisw/uuid/blob/master/libblkid/src/blkidP.h#L178
 
-(define probe-struct
-  (bs:struct
-   `((fd ,int)
-     (off ,uint64)
-     (size ,uint64)
-     (devno ,dev_t)
-     (disk-devno ,dev_t)
-     (blkssz ,uint)
-     (mode ,mode_t)
-     (zone-size ,uint64)
-     (flags ,int)
-     (prob-flags ,int)
-     (wipe-off ,uint64)
-     (wipe-size ,uint64))))
+(eval-when (expand load eval)
+  (define probe-struct
+    (bs:struct
+     `((fd ,int)
+       (off ,uint64)
+       (size ,uint64)
+       (devno ,dev_t)
+       (disk-devno ,dev_t)
+       (blkssz ,uint)
+       (mode ,mode_t)
+       (zone-size ,uint64)
+       (flags ,int)
+       (prob-flags ,int)
+       (wipe-off ,uint64)
+       (wipe-size ,uint64)))))
 
-(define partition-struct
-  (bs:struct
-   `((start ,uint64)
-     (size ,uint64)
-     (type ,int)
-     (type-str ,(bs:string 37 'utf8))
-     (flags ,long-long)
-     (partno ,int)
-     (uuid ,(bs:string 37 'utf8))
-     (name ,(bs:string 128 'utf8)))))
+(eval-when (expand load eval)
+  (define partition-struct
+    (bs:struct
+     `((start ,uint64)
+       (size ,uint64)
+       (type ,int)
+       (type-str ,(bs:string 37 'utf8))
+       (flags ,long-long)
+       (partno ,int)
+       (uuid ,(bs:string 37 'utf8))
+       (name ,(bs:string 128 'utf8))))))
 
 (define-bytestructure-accessors probe-struct
   probe-struct-unwrap probe-struct-ref probe-struct-set!)
@@ -135,4 +139,4 @@
          (cons device (probe-device device)))
        devices))
 
-;; (pretty-print (probe-devices '("/dev/nvme0n1" "/dev/sda")))
+(pretty-print (probe-devices '("/dev/nvme0n1" "/dev/sda")))
