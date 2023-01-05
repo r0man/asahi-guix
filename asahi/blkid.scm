@@ -16,8 +16,8 @@
 ;; Use #:search-path ?
 ;; (setenv "GUILE_EXTENSIONS_PATH" "/gnu/store/yg4l52c2hrxrnpfq23krjv8jgazhb9xd-util-linux-2.37.2-lib/lib")
 
-(define libblkid
-  (delay (load-foreign-library "libblkid")))
+;; (define libblkid
+;;   (delay (load-foreign-library "libblkid")))
 
 (define new-probe-from-filename
   (foreign-library-function
@@ -127,6 +127,7 @@
              (pointer->partition (partlist-get-partition partition-list partition-num)))))
 
 (define (probe-device device)
+  (load-foreign-library "libblkid")
   (let* ((probe (new-probe-from-filename (ffi:string->pointer device)))
          (probe-data (pointer->probe probe))
          (partitions (probe-partitions probe)))
@@ -135,6 +136,7 @@
       (partitions . ,partitions))))
 
 (define (probe-devices devices)
+  (load-foreign-library "libblkid")
   (map (lambda (device)
          (cons device (probe-device device)))
        devices))
