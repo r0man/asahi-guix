@@ -1,5 +1,6 @@
 (define-module (asahi packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
@@ -23,6 +24,18 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
+(define-public guile-util-linux
+  (package
+    (inherit util-linux)
+    (name "guile-util-linux")
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files '("lib")))
+           (search-path-specification
+            (variable "LD_LIBRARY_PATH")
+            (files '("lib")))))))
+
 (define-public asahi-guix
   (package
     (name "asahi-guix")
@@ -42,17 +55,30 @@
            (lambda _
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm"))))))
-    (inputs
-     (list guile-bytestructures
-           `(,(package
-                (inherit util-linux)
-                (native-search-paths
-                 (list (search-path-specification
-                        (variable "GUILE_EXTENSIONS_PATH")
-                        (files '("lib"))))))
-             "lib")))
+    (propagated-inputs
+     (list guile-bytestructures libtool
+           `(,guile-util-linux "lib")))
+    ;; (inputs
+    ;;  (list `(,(package
+    ;;             (inherit util-linux)
+    ;;             (native-search-paths
+    ;;              (list (search-path-specification
+    ;;                     (variable "GUILE_EXTENSIONS_PATH")
+    ;;                     (files '("lib"))))))
+    ;;          "lib")))
+
     (native-inputs
-     (list guile-3.0/fixed guix))
+     ;; TODO: Add guile-3.0/fixed back? byte code conflict?
+     (list guile-3.0-latest guix
+           guile-bytestructures libtool
+           `(,guile-util-linux "lib")))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUILE_EXTENSIONS_PATH")
+            (files '("lib")))
+           (search-path-specification
+            (variable "LD_LIBRARY_PATH")
+            (files '("lib")))))
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")
