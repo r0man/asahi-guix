@@ -24,6 +24,12 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
+(define-public guix-guile-3.0/fixed
+  (package/inherit guix
+    (name "guix-fixed")
+    (native-inputs (modify-inputs (package-native-inputs guix)
+                     (replace "guile" guile-3.0/fixed)))))
+
 (define-public guile-util-linux
   (package
     (inherit util-linux)
@@ -39,14 +45,14 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "2348b800559cd776cd7712b1b4823d13bed38c09")
+    (version "663ab5c0496c565a407e089aa47cdcf89a0ece22")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "104bhq83v0r4higf8x2ga3qprcjcpb193qca15i6a48zdkmcp99l"))))
+        (base32 "1v55qsp5w3kvyzmn55lzj78qpw77wrz4ll91p96a5naaf5308ql0"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
@@ -56,22 +62,12 @@
              (delete-file "asahi/installer.scm")
              (delete-file "asahi/initrd.scm"))))))
     (propagated-inputs
-     (list guile-bytestructures libtool
-           `(,guile-util-linux "lib")))
-    ;; (inputs
-    ;;  (list `(,(package
-    ;;             (inherit util-linux)
-    ;;             (native-search-paths
-    ;;              (list (search-path-specification
-    ;;                     (variable "GUILE_EXTENSIONS_PATH")
-    ;;                     (files '("lib"))))))
-    ;;          "lib")))
-
+     (list guile-bytestructures `(,guile-util-linux "lib")))
     (native-inputs
-     ;; TODO: Add guile-3.0/fixed back? byte code conflict?
-     (list guile-3.0-latest guix
-           guile-bytestructures libtool
-           `(,guile-util-linux "lib")))
+     (list guile-3.0/fixed
+           guile-bytestructures
+           `(,guile-util-linux "lib")
+           guix-guile-3.0/fixed))
     (native-search-paths
      (list (search-path-specification
             (variable "GUILE_EXTENSIONS_PATH")
