@@ -19,35 +19,36 @@
 ;; (define libblkid
 ;;   (delay (load-foreign-library "libblkid")))
 
-(define new-probe-from-filename
-  (foreign-library-function
-   "libblkid" "blkid_new_probe_from_filename"
-   #:return-type '* #:arg-types (list '*)))
+(eval-when (expand load eval)
+  (define new-probe-from-filename
+    (foreign-library-function
+     "libblkid" "blkid_new_probe_from_filename"
+     #:return-type '* #:arg-types (list '*)))
 
-(define free-probe
-  (foreign-library-function
-   "libblkid" "blkid_free_probe"
-   #:arg-types (list '*)))
+  (define free-probe
+    (foreign-library-function
+     "libblkid" "blkid_free_probe"
+     #:arg-types (list '*)))
 
-(define probe-get-partitions
-  (foreign-library-function
-   "libblkid" "blkid_probe_get_partitions"
-   #:return-type '* #:arg-types (list '*)))
+  (define probe-get-partitions
+    (foreign-library-function
+     "libblkid" "blkid_probe_get_partitions"
+     #:return-type '* #:arg-types (list '*)))
 
-(define partlist-get-table
-  (foreign-library-function
-   "libblkid" "blkid_partlist_get_table"
-   #:return-type '* #:arg-types (list '*)))
+  (define partlist-get-table
+    (foreign-library-function
+     "libblkid" "blkid_partlist_get_table"
+     #:return-type '* #:arg-types (list '*)))
 
-(define partlist-get-partition
-  (foreign-library-function
-   "libblkid" "blkid_partlist_get_partition"
-   #:return-type '* #:arg-types (list '* ffi:int)))
+  (define partlist-get-partition
+    (foreign-library-function
+     "libblkid" "blkid_partlist_get_partition"
+     #:return-type '* #:arg-types (list '* ffi:int)))
 
-(define partlist-numof-partitions
-  (foreign-library-function
-   "libblkid" "blkid_partlist_numof_partitions"
-   #:return-type ffi:int #:arg-types (list '*)))
+  (define partlist-numof-partitions
+    (foreign-library-function
+     "libblkid" "blkid_partlist_numof_partitions"
+     #:return-type ffi:int #:arg-types (list '*))))
 
 ;; https://github.com/alisw/uuid/blob/master/libblkid/src/blkidP.h#L178
 
@@ -127,7 +128,6 @@
              (pointer->partition (partlist-get-partition partition-list partition-num)))))
 
 (define (probe-device device)
-  (load-foreign-library "libblkid")
   (let* ((probe (new-probe-from-filename (ffi:string->pointer device)))
          (probe-data (pointer->probe probe))
          (partitions (probe-partitions probe)))
@@ -136,7 +136,6 @@
       (partitions . ,partitions))))
 
 (define (probe-devices devices)
-  (load-foreign-library "libblkid")
   (map (lambda (device)
          (cons device (probe-device device)))
        devices))
