@@ -1,7 +1,10 @@
 (define-module (asahi initrd)
+  #:use-module (asahi blkid)
   #:use-module (asahi firmware)
   #:use-module (asahi packages)
   #:use-module (gnu build linux-modules)
+  #:use-module (gnu packages autotools)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
@@ -23,7 +26,7 @@
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
-                       (helper-packages '())
+                       (helper-packages (list asahi-guix))
                        qemu-networking?
                        volatile-root?
                        (on-error 'debug))
@@ -58,7 +61,7 @@
   ;; (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
-   (with-extensions (list asahi-guix)
+   (with-extensions (list asahi-guix guile-bytestructures guile-util-linux libtool)
      (with-imported-modules (source-module-closure
                              '((asahi firmware)
                                (gnu build file-systems)
