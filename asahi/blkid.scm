@@ -16,38 +16,39 @@
 ;; Use #:search-path ?
 ;; (setenv "GUILE_EXTENSIONS_PATH" "/gnu/store/yg4l52c2hrxrnpfq23krjv8jgazhb9xd-util-linux-2.37.2-lib/lib")
 
-(define libblkid
-  (load-foreign-library "libblkid"))
+(eval-when (expand compile load eval)
+  (define libblkid
+    (load-foreign-library "libblkid"))
 
-(define new-probe-from-filename
-  (foreign-library-function
-   "libblkid" "blkid_new_probe_from_filename"
-   #:return-type '* #:arg-types (list '*)))
+  (define new-probe-from-filename
+    (foreign-library-function
+     "libblkid" "blkid_new_probe_from_filename"
+     #:return-type '* #:arg-types (list '*)))
 
-(define free-probe
-  (foreign-library-function
-   "libblkid" "blkid_free_probe"
-   #:arg-types (list '*)))
+  (define free-probe
+    (foreign-library-function
+     "libblkid" "blkid_free_probe"
+     #:arg-types (list '*)))
 
-(define probe-get-partitions
-  (foreign-library-function
-   "libblkid" "blkid_probe_get_partitions"
-   #:return-type '* #:arg-types (list '*)))
+  (define probe-get-partitions
+    (foreign-library-function
+     "libblkid" "blkid_probe_get_partitions"
+     #:return-type '* #:arg-types (list '*)))
 
-(define partlist-get-table
-  (foreign-library-function
-   "libblkid" "blkid_partlist_get_table"
-   #:return-type '* #:arg-types (list '*)))
+  (define partlist-get-table
+    (foreign-library-function
+     "libblkid" "blkid_partlist_get_table"
+     #:return-type '* #:arg-types (list '*)))
 
-(define partlist-get-partition
-  (foreign-library-function
-   "libblkid" "blkid_partlist_get_partition"
-   #:return-type '* #:arg-types (list '* ffi:int)))
+  (define partlist-get-partition
+    (foreign-library-function
+     "libblkid" "blkid_partlist_get_partition"
+     #:return-type '* #:arg-types (list '* ffi:int)))
 
-(define partlist-numof-partitions
-  (foreign-library-function
-   "libblkid" "blkid_partlist_numof_partitions"
-   #:return-type ffi:int #:arg-types (list '*)))
+  (define partlist-numof-partitions
+    (foreign-library-function
+     "libblkid" "blkid_partlist_numof_partitions"
+     #:return-type ffi:int #:arg-types (list '*))))
 
 ;; https://github.com/alisw/uuid/blob/master/libblkid/src/blkidP.h#L178
 
