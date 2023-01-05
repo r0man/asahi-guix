@@ -112,7 +112,6 @@
 
     ;; Add some extra packages useful for the installation process
     (packages
-     (append (list git curl)
-             (operating-system-packages installation-os)))))
+     (append (list asahi-guix) (operating-system-packages installation-os)))))
 
 installation-os-nonfree
