@@ -64,9 +64,11 @@
 
 ;; MBR Table
 
+(define %mbr-code-size 440)
+
 (define %mbr-table-struct
   (bs:struct
-   `((code ,(bs:vector 440 uint8))
+   `((code ,(bs:vector %mbr-code-size uint8))
      (disk-signature ,int)
      (reserved ,uint16)
      (partition-1 ,%partition-struct)
@@ -88,7 +90,7 @@
 
 (define (struct->mbr-table struct)
   (mbr-table
-   (code (list-ec (: offset 440) (bytestructure-ref struct 'code offset)))
+   (code (list-ec (: offset %mbr-code-size) (bytestructure-ref struct 'code offset)))
    (disk-signature (bytestructure-ref struct 'disk-signature))
    (reserved (bytestructure-ref struct 'reserved))
    (partitions (map struct->mbr-partition
