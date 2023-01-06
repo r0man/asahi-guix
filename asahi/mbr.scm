@@ -105,9 +105,28 @@
         (struct->mbr-table (make-bytestructure bytes 0 %mbr-table-struct))))
     #:binary #t))
 
+(define (display-partititon partition)
+  (format #t "Partition:\n")
+  (format #t "  Status: ~a\n" (mbr-partition-status partition))
+  (format #t "  Start: ~a\n" (mbr-partition-start partition))
+  (format #t "  Type: ~a\n" (mbr-partition-type partition))
+  (format #t "  End: ~a\n" (mbr-partition-end partition))
+  (format #t "  LBA: ~a\n" (mbr-partition-lba partition))
+  (format #t "  Sectors: ~a\n" (mbr-partition-sectors partition))
+  (newline))
+
+(define (display-mbr table)
+  (format #t "*** MASTER BOOT RECORD ***\n\n")
+  (format #t "Disk Signature: ~a\n" (mbr-table-disk-signature table))
+  (format #t "Boot Signature: ~a\n" (mbr-table-boot-signature table))
+  (newline)
+  (format #t "Code:\n ~a\n\n" (mbr-table-code table))
+  (map display-partititon (mbr-table-partitions table)))
+
 ;; (bytestructureure-descriptor-size uint32)
 
 (define my-mbr
   (read-mbr "/home/r0man/workspace/asahi-guix/test/dev/nvme0n1"))
 
-(pretty-print (mbr-table-partitions my-mbr))
+;; (pretty-print (mbr-table-partitions my-mbr))
+(display-mbr my-mbr)
