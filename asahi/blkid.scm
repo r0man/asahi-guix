@@ -19,7 +19,12 @@
 ;; (define libblkid
 ;;   (delay (load-foreign-library "libblkid")))
 
-(eval-when (expand load eval)
+;; DONE: load
+;; TODO: expand
+;; TODO: eval
+;; TODO: compile
+
+(eval-when (load)
   (define new-probe-from-filename
     (foreign-library-function
      "libblkid" "blkid_new_probe_from_filename"
