@@ -116,17 +116,14 @@
   (newline))
 
 (define (display-mbr table)
-  (format #t "*** MASTER BOOT RECORD ***\n\n")
-  (format #t "Disk Signature: ~a\n" (mbr-table-disk-signature table))
-  (format #t "Boot Signature: ~a\n" (mbr-table-boot-signature table))
+  (format #t "Table:\n")
+  (format #t "  Disk Signature: ~a\n" (mbr-table-disk-signature table))
+  (format #t "  Boot Signature: ~a\n" (mbr-table-boot-signature table))
   (newline)
-  (format #t "Code:\n ~a\n\n" (mbr-table-code table))
+  (format #t "  Code:\n ~a\n\n" (mbr-table-code table))
   (map display-partititon (mbr-table-partitions table)))
-
-;; (bytestructureure-descriptor-size uint32)
 
 (define my-mbr
   (read-mbr "/home/r0man/workspace/asahi-guix/test/dev/nvme0n1"))
 
-;; (pretty-print (mbr-table-partitions my-mbr))
 (display-mbr my-mbr)
