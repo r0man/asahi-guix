@@ -1,4 +1,4 @@
-(define-module (asahi mbr)
+(define-module (asahi guix disk mbr)
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (guix records)
