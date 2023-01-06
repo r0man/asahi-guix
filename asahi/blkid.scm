@@ -20,37 +20,43 @@
 ;;   (delay (load-foreign-library "libblkid")))
 
 ;; DONE: load
+;; DONE: load, compile
 ;; TODO: expand
 ;; TODO: eval
 ;; TODO: compile
 
-(eval-when (load)
-  (define new-probe-from-filename
+(define new-probe-from-filename
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_new_probe_from_filename"
-     #:return-type '* #:arg-types (list '*)))
+     #:return-type '* #:arg-types (list '*))))
 
-  (define free-probe
+(define free-probe
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_free_probe"
-     #:arg-types (list '*)))
+     #:arg-types (list '*))))
 
-  (define probe-get-partitions
+(define probe-get-partitions
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_probe_get_partitions"
-     #:return-type '* #:arg-types (list '*)))
+     #:return-type '* #:arg-types (list '*))))
 
-  (define partlist-get-table
+(define partlist-get-table
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_partlist_get_table"
-     #:return-type '* #:arg-types (list '*)))
+     #:return-type '* #:arg-types (list '*))))
 
-  (define partlist-get-partition
+(define partlist-get-partition
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_partlist_get_partition"
-     #:return-type '* #:arg-types (list '* ffi:int)))
+     #:return-type '* #:arg-types (list '* ffi:int))))
 
-  (define partlist-numof-partitions
+(define partlist-numof-partitions
+  (eval-when (load compile)
     (foreign-library-function
      "libblkid" "blkid_partlist_numof_partitions"
      #:return-type ffi:int #:arg-types (list '*))))

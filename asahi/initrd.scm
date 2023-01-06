@@ -22,7 +22,7 @@
 (define* (asahi-initrd file-systems
                        #:key
                        (linux linux-libre)
-                       (linux-modules '())
+                       (linux-modules '("apple-mailbox" "nvme-apple"))
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
