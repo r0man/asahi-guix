@@ -75,6 +75,9 @@
      (partition-4 ,%partition-struct)
      (boot-signature ,uint16))))
 
+(define %mbr-table-struct-size
+  (bytestructure-descriptor-size %mbr-table-struct))
+
 (define-record-type* <mbr-table>
   mbr-table make-mbr-table mbr-table?
   (code mbr-table-code)
@@ -83,31 +86,28 @@
   (partitions mbr-table-partitions)
   (boot-signature mbr-table-boot-signature))
 
-(define (bytes->mbr-table bytes)
-  (let ((struct (make-bytestructure bytes 0 %mbr-table-struct)))
-    (mbr-table
-     (code (list-ec (: offset 440) (bytestructure-ref struct 'code offset)))
-     (disk-signature (bytestructure-ref struct 'disk-signature))
-     (reserved (bytestructure-ref struct 'reserved))
-     (partitions (map struct->mbr-partition
-                      (list (bytestructure-ref struct 'partition-1)
-                            (bytestructure-ref struct 'partition-2)
-                            (bytestructure-ref struct 'partition-3)
-                            (bytestructure-ref struct 'partition-4))))
-     (boot-signature (bytestructure-ref struct 'boot-signature)))))
-
-(define (read-mbr-table port)
-  (let ((size (bytestructure-descriptor-size %mbr-table-struct)))
-    (bytes->mbr-table (get-bytevector-n port size))))
+(define (struct->mbr-table struct)
+  (mbr-table
+   (code (list-ec (: offset 440) (bytestructure-ref struct 'code offset)))
+   (disk-signature (bytestructure-ref struct 'disk-signature))
+   (reserved (bytestructure-ref struct 'reserved))
+   (partitions (map struct->mbr-partition
+                    (list (bytestructure-ref struct 'partition-1)
+                          (bytestructure-ref struct 'partition-2)
+                          (bytestructure-ref struct 'partition-3)
+                          (bytestructure-ref struct 'partition-4))))
+   (boot-signature (bytestructure-ref struct 'boot-signature))))
 
 (define (read-mbr device)
   (call-with-input-file device
-    (lambda (port) (read-mbr-table port))
+    (lambda (port)
+      (let ((bytes (get-bytevector-n port %mbr-table-struct-size)))
+        (struct->mbr-table (make-bytestructure bytes 0 %mbr-table-struct))))
     #:binary #t))
 
 ;; (bytestructureure-descriptor-size uint32)
 
 (define my-mbr
-  (read-mbr "/home/roman/workspace/asahi-guix/my-nvme0n1"))
+  (read-mbr "/home/r0man/workspace/asahi-guix/test/dev/nvme0n1"))
 
-(pretty-print my-mbr)
+(pretty-print (mbr-table-partitions my-mbr))
