@@ -20,6 +20,7 @@
   #:use-module (guix gexp)
   #:use-module (guix)
   #:use-module (nongnu packages linux)
+  #:use-module (nongnu system linux-initrd)
   #:export (installation-os-nonfree))
 
 (define modules
@@ -75,15 +76,16 @@
 ;;         (use-modules (asahi firmware))
 ;;         (mount-efi-system-partition "/run/.system-efi"))))
 
-(define installation-os-nonfree
+(define asahi-installation-os
   (operating-system
     (inherit installation-os)
     (kernel asahi-linux)
-    (firmware (list linux-firmware))
+    (firmware (cons* linux-firmware asahi-firmware %base-firmware))
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
-    (initrd asahi-initrd)
+    (initrd microcode-initrd)
+    ;; (initrd asahi-initrd)
     ;; (initrd (lambda (file-systems . rest)
     ;;           ;; Create a standard initrd but set up networking
     ;;           ;; with the parameters QEMU expects by default.
@@ -114,4 +116,4 @@
     (packages
      (append (list asahi-guix) (operating-system-packages installation-os)))))
 
-installation-os-nonfree
+asahi-installation-os
