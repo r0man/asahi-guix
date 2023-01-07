@@ -79,7 +79,7 @@
 (define asahi-installation-os
   (operating-system
     (inherit installation-os)
-    (kernel asahi-linux)
+    (kernel asahi-linux-edge)
     (firmware (cons* linux-firmware asahi-firmware %base-firmware))
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
