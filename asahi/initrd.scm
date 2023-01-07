@@ -21,7 +21,7 @@
 (define* (asahi-initrd file-systems
                        #:key
                        (linux linux-libre)
-                       (linux-modules '("apple-mailbox" "nvme-apple"))
+                       (linux-modules '())
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
@@ -98,22 +98,28 @@
                (set-path-environment-variable "PATH" '("bin" "sbin")
                                               '#$helper-packages)))
 
-           (let ((firmware-directory #+(file-append asahi-firmware "/lib/firmware")))
-             (format #t ":: Asahi: Activating firmware in ~a...\n" firmware-directory)
-             (activate-firmware firmware-directory)
-             (format #t ":: Asahi: Firmware activated.\n"))
-
            (parameterize ((current-warning-port (%make-void-port "w")))
              (boot-system #:mounts
                           (map spec->file-system
                                '#$(map file-system->spec file-systems))
                           #:pre-mount (lambda ()
-                                        ;; (guard (ex (else (format #t ":: Asahi: Pre mount error:\n")
-                                        ;;                  (pretty-print ex)
-                                        ;;                  #f))
+                                        (guard (ex (_ (format #t ":: Asahi Guix: Failed to load firmware.\n")
+                                                      (pretty-print ex)
+                                                      #f))
+                                          (let ((firmware-directory #+(file-append asahi-firmware "/lib/firmware")))
+                                            (format #t ":: Asahi Guix: Activating firmware in ~a...\n" firmware-directory)
+                                            (activate-firmware firmware-directory)
+                                            (format #t ":: Asahi Guix: Firmware activated.\n")))
 
-                                        ;;   (display ":: Asahi: Mounting EFI system partition ...\n")
-                                        ;;   (mount-efi-system-partition "/run/.system-efi"))
+                                        (guard (ex (_ (format #t ":: Asahi Guix: Failed to load kernel modules.\n")
+                                                      (pretty-print ex)
+                                                      #f))
+                                          (format #t ":: Asahi Guix: Loading kernel modules from ~a...\n" '#$kodir)
+                                          (load-linux-modules-from-directory '#$linux-modules '#$kodir)
+                                          (format #t ":: Asahi Guix: Kernel modules loaded.\n"))
+
+                                        ;; (display ":: Asahi Guix: Mounting EFI system partition ...\n")
+                                        ;; (mount-efi-system-partition "/run/.system-efi")
                                         (and #$pre-mount
                                              #$@device-mapping-commands
                                              #$@file-system-scan-commands))
