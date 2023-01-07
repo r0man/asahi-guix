@@ -1,5 +1,4 @@
 (define-module (asahi initrd)
-  #:use-module (asahi blkid)
   #:use-module (asahi firmware)
   #:use-module (asahi packages)
   #:use-module (gnu build linux-modules)
@@ -22,7 +21,7 @@
 (define* (asahi-initrd file-systems
                        #:key
                        (linux linux-libre)
-                       (linux-modules '())
+                       (linux-modules '("apple-mailbox" "nvme-apple"))
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
@@ -61,7 +60,7 @@
   ;; (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
-   (with-extensions (list asahi-guix guile-bytestructures guile-util-linux libtool)
+   (with-extensions (list asahi-guix)
      (with-imported-modules (source-module-closure
                              '((asahi firmware)
                                (gnu build file-systems)
@@ -104,10 +103,7 @@
                                                          #f))
 
                                           (display ":: Asahi: Mounting EFI system partition ...\n")
-                                          (mount-efi-system-partition "/run/.system-efi")
-
-                                          (display ":: Asahi: Triggering early load of NVMe modules ...\n")
-                                          (load-linux-modules-from-directory '("apple-mailbox" "nvme-apple") '#$kodir))
+                                          (mount-efi-system-partition "/run/.system-efi"))
                                         (and #$pre-mount
                                              #$@device-mapping-commands
                                              #$@file-system-scan-commands))

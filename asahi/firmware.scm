@@ -1,5 +1,4 @@
 (define-module (asahi firmware)
-  #:use-module (asahi blkid)
   #:use-module (gnu build file-systems)
   #:use-module (gnu system uuid)
   #:use-module (guix build syscalls)
@@ -9,7 +8,10 @@
   #:use-module (srfi srfi-1)
   #:export (mount-efi-system-partition))
 
-(define efi-system-partition-uuid-path
+(define %default-efi-device
+  "/dev/nvme0n1p7")
+
+(define %efi-system-partition-uuid-path
   "/proc/device-tree/chosen/asahi,efi-system-partition")
 
 (define (boot-mount-path)
@@ -39,6 +41,9 @@
     (let ((content (call-with-input-file path get-string-all)))
       (uuid (string-trim-right content #\nul)))))
 
+(define (efi-system-partition-device path)
+  %default-efi-device)
+
 (define (mount-efi-system-partition mount-point)
   (mkdir-p mount-point)
   (while (find-mount-point (mount-points) mount-point)
@@ -46,23 +51,23 @@
     (umount mount-point)
     (format #t "Unmounted ~a\n" mount-point))
 
-  (format #t "Probing block devices ...\n")
-  (pretty-print (probe-devices (disk-devices)))
-
   (format #t "Mounting EFI system partition ...\n")
   (let ((boot-path (boot-mount-path))
-        (esp-uuid (read-efi-system-partition-uuid efi-system-partition-uuid-path)))
+        (esp-uuid (read-efi-system-partition-uuid %efi-system-partition-uuid-path)))
     (when esp-uuid
       (format #t "EFI System partition UUID: ~a\n" (uuid->string esp-uuid))
       (format #t "Mounting ~a to ~a ...\n" (uuid->string esp-uuid) mount-point)
-      (let ((partition (find-partition-by-uuid esp-uuid)))
-        (if partition
-            (mount partition mount-point "ext4")
-            (format #t "Can't find partition for UUID: ~a\n" (uuid->string esp-uuid)))))
+      (mount %default-efi-device mount-point "vfat"))
     (let ((device (find-mount-point (mount-points) mount-point)))
       (if device
           (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
           (format #t "System ESP not mounted.")))))
+
+;; (define (extract-firmware mount-point)
+;;   (let ((esp-mount-dir "/tmp/.fwsetup/esp")
+;;         (extracted-firmware-dir "/tmp/.fwsetup/esp"))
+;;     (mkdir-p "/tmp/.fwsetup/esp")
+;;     (mkdir-p "/tmp/.fwsetup/extracted")))
 
 ;; (pretty-print (mount-points))
 ;; (mount-efi-system-partition "/run/.system-efi")
