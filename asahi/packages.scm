@@ -4,6 +4,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages imagemagick)
@@ -13,6 +14,7 @@
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system guile)
   #:use-module (guix build-system python)
@@ -33,14 +35,14 @@
 (define-public asahi-guix
   (package
     (name "asahi-guix")
-    (version "5fdb7e3a9445c040c65f8b91666702318f5b969c")
+    (version "132b50297d774f0fa43c2502f014cb0017d7f0ed")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/r0man/asahi-guix/archive/"
                            version ".tar.gz"))
        (sha256
-        (base32 "0yb4is7xmsz518v0rc6yrcs2zgzmavi8r5yfprp6s65rrk194r20"))))
+        (base32 "0kz45h7gcg8pk9w8fkg3prf89hb3lix79793wcpxvrnlbxk3672f"))))
     (build-system guile-build-system)
     (arguments
      `(#:phases
@@ -56,6 +58,26 @@
     (home-page "https://github.com/r0man/asahi-guix")
     (synopsis "Asahi Guix")
     (description "Asahi Guix Guile package")
+    (license license:expat)))
+
+(define-public asahi-firmware
+  (package
+    (name "asahi-firmware")
+    (version "0.0.1")
+    (source (local-file "/boot/efi/vendorfw/firmware.cpio"))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("vendorfw" "lib/firmware/vendor"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-firmware
+           (lambda _
+             (invoke "cpio" "-idv" "-F" "firmware.cpio"))))))
+    (native-inputs (list cpio))
+    (home-page "https://github.com/r0man/asahi-guix")
+    (synopsis "Asahi Guix firmware")
+    (description "Asahi Guix firmware")
     (license license:expat)))
 
 (define (make-asahi-linux name config)
