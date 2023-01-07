@@ -69,7 +69,7 @@
 (define %mbr-table-struct
   (bs:struct
    `((code ,(bs:vector %mbr-code-size uint8))
-     (disk-signature ,int)
+     (disk-signature ,uint32)
      (reserved ,uint16)
      (partition-1 ,%partition-struct)
      (partition-2 ,%partition-struct)
@@ -100,10 +100,13 @@
                           (bytestructure-ref struct 'partition-4))))
    (boot-signature (bytestructure-ref struct 'boot-signature))))
 
+(define my-bytes)
+
 (define (read-mbr device)
   (call-with-input-file device
     (lambda (port)
       (let ((bytes (get-bytevector-n port %mbr-table-struct-size)))
+        (set! my-bytes bytes)
         (struct->mbr-table (make-bytestructure bytes 0 %mbr-table-struct))))
     #:binary #t))
 
@@ -128,4 +131,27 @@
 (define my-mbr
   (read-mbr "/home/r0man/workspace/asahi-guix/test/dev/nvme0n1"))
 
-(display-mbr my-mbr)
+;; (display-mbr my-mbr)
+
+
+;; (bytestructure-descriptor-size
+;;  (bs:struct
+;;   `((code ,(bs:vector %mbr-code-size uint8))
+;;     (disk-signature ,uint32)
+;;     (reserved ,uint16)
+;;     (partition-1 ,%partition-struct)
+;;     (partition-2 ,%partition-struct)
+;;     (partition-3 ,%partition-struct)
+;;     (partition-4 ,%partition-struct)
+;;     (boot-signature ,uint16))))
+
+;; (apply + (list (bytestructure-descriptor-size (bs:vector %mbr-code-size uint8))
+;;                (bytestructure-descriptor-size uint32)
+;;                (bytestructure-descriptor-size uint16)
+;;                (bytestructure-descriptor-size %partition-struct)
+;;                (bytestructure-descriptor-size %partition-struct)
+;;                (bytestructure-descriptor-size %partition-struct)
+;;                (bytestructure-descriptor-size %partition-struct)
+;;                (bytestructure-descriptor-size uint16)))
+
+;; (bytestructure-size (bytestructure %mbr-table-struct))
