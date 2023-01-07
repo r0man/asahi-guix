@@ -11,6 +11,9 @@
 (define %default-efi-device
   "/dev/nvme0n1p7")
 
+(define %linux-module-directory
+  "/run/booted-system/kernel/lib/modules")
+
 (define %efi-system-partition-uuid-path
   "/proc/device-tree/chosen/asahi,efi-system-partition")
 
@@ -64,7 +67,8 @@
     (let ((device (find-mount-point (mount-points) mount-point)))
       (if device
           (format #t "Mounted System ESP ~a at ~a\n" (car device) mount-point)
-          (format #t "System ESP not mounted.")))))
+          (format #t "System ESP not mounted."))
+      (format #t "Linux module directory: ~a\n" %linux-module-directory))))
 
 ;; (define (extract-firmware mount-point)
 ;;   (let ((esp-mount-dir "/tmp/.fwsetup/esp")
