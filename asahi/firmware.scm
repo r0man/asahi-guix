@@ -1,4 +1,5 @@
 (define-module (asahi firmware)
+  #:use-module (gnu build activation)
   #:use-module (gnu build file-systems)
   #:use-module (gnu system uuid)
   #:use-module (guix build syscalls)

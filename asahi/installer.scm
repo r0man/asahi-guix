@@ -84,8 +84,8 @@
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
-    (initrd microcode-initrd)
-    ;; (initrd asahi-initrd)
+    ;; (initrd microcode-initrd)
+    (initrd asahi-initrd)
     ;; (initrd (lambda (file-systems . rest)
     ;;           ;; Create a standard initrd but set up networking
     ;;           ;; with the parameters QEMU expects by default.
@@ -102,8 +102,7 @@
     ;; wpa_supplicant when you try to connect to a wifi network.
     (kernel-arguments '("modprobe.blacklist=radeon"
                         "net.ifnames=0"
-                        ;; "quiet"
-                        ))
+                        "quiet"))
 
     (services
      (cons*

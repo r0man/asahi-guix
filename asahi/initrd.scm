@@ -25,7 +25,7 @@
                        (pre-mount #t)
                        (mapped-devices '())
                        (keyboard-layout #f)
-                       (helper-packages (list asahi-guix))
+                       (helper-packages (list asahi-guix asahi-firmware))
                        qemu-networking?
                        volatile-root?
                        (on-error 'debug))
@@ -53,6 +53,9 @@
   (define kodir
     (flat-linux-module-directory linux linux-modules))
 
+  (define firmware-directory
+    (file-append asahi-firmware "/lib/firmware"))
+
   ;; (format #t "LINUX: ~a\n" linux)
   ;; (format #t "HELPER: ~a\n" helper-packages)
   ;; (format #t "FILE SYSTEMS: ~a\n" file-systems)
@@ -60,9 +63,10 @@
   ;; (format #t "DEVICE MAPPING COMMANDS: ~a\n" device-mapping-commands)
 
   (expression->initrd
-   (with-extensions (list asahi-guix)
+   (with-extensions (list asahi-guix asahi-firmware)
      (with-imported-modules (source-module-closure
                              '((asahi firmware)
+                               (gnu build activation)
                                (gnu build file-systems)
                                (gnu build linux-boot)
                                (gnu build linux-modules)
@@ -72,6 +76,7 @@
                                (ice-9 exceptions)))
        #~(begin
            (use-modules (asahi firmware)
+                        (gnu build activation)
                         (gnu build linux-boot)
                         (gnu system file-systems)
                         ((guix build utils) #:hide (delete))
@@ -93,17 +98,22 @@
                (set-path-environment-variable "PATH" '("bin" "sbin")
                                               '#$helper-packages)))
 
+           (let ((firmware-directory #+(file-append asahi-firmware "/lib/firmware")))
+             (format #t ":: Asahi: Activating firmware in ~a...\n" firmware-directory)
+             (activate-firmware firmware-directory)
+             (format #t ":: Asahi: Firmware activated.\n"))
+
            (parameterize ((current-warning-port (%make-void-port "w")))
              (boot-system #:mounts
                           (map spec->file-system
                                '#$(map file-system->spec file-systems))
                           #:pre-mount (lambda ()
-                                        (guard (ex (else (format #t ":: Asahi: Pre mount error:\n")
-                                                         (pretty-print ex)
-                                                         #f))
+                                        ;; (guard (ex (else (format #t ":: Asahi: Pre mount error:\n")
+                                        ;;                  (pretty-print ex)
+                                        ;;                  #f))
 
-                                          (display ":: Asahi: Mounting EFI system partition ...\n")
-                                          (mount-efi-system-partition "/run/.system-efi"))
+                                        ;;   (display ":: Asahi: Mounting EFI system partition ...\n")
+                                        ;;   (mount-efi-system-partition "/run/.system-efi"))
                                         (and #$pre-mount
                                              #$@device-mapping-commands
                                              #$@file-system-scan-commands))
