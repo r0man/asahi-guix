@@ -44,14 +44,17 @@
 (define (efi-system-partition-device path)
   %default-efi-device)
 
-(define (mount-efi-system-partition mount-point)
-  (mkdir-p mount-point)
-  (while (find-mount-point (mount-points) mount-point)
-    (format #t "Unmounting ~a ...\n" mount-point)
-    (umount mount-point)
-    (format #t "Unmounted ~a\n" mount-point))
+(define (unmount-efi-system-partition mount-point)
+  (when (directory-exists? mount-point)
+    (while (find-mount-point (mount-points) mount-point)
+      (format #t "Unmounting ~a ...\n" mount-point)
+      (umount mount-point)
+      (format #t "Unmounted ~a\n" mount-point))))
 
+(define (mount-efi-system-partition mount-point)
+  (unmount-efi-system-partition mount-point)
   (format #t "Mounting EFI system partition ...\n")
+  (mkdir-p mount-point)
   (let ((boot-path (boot-mount-path))
         (esp-uuid (read-efi-system-partition-uuid %efi-system-partition-uuid-path)))
     (when esp-uuid
