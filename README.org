@@ -26,6 +26,7 @@ Status:
 
 ** Packages
 
+- asahi-firmware
 - asahi-fwextract
 - asahi-linux
 - asahi-linux-edge

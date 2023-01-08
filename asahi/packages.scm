@@ -2,12 +2,14 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpio)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix download)
@@ -18,6 +20,41 @@
   #:use-module (guix utils)
   #:use-module (nongnu packages linux)
   #:use-module (srfi srfi-1))
+
+(define-public asahi-firmware
+  (package
+    (name "asahi-firmware")
+    (version "1.0.0")
+    (source (cond
+             ((getenv "ASAHI_GUIX_FIRMWARE_SOURCE")
+              (local-file (getenv "ASAHI_GUIX_FIRMWARE_SOURCE")))
+             ((file-exists? "/boot/efi/vendorfw/firmware.cpio")
+              (local-file "/boot/efi/vendorfw/firmware.cpio"))
+             ((file-exists? "/run/.system-efi/vendorfw/firmware.cpio")
+              (local-file "/run/.system-efi/vendorfw/firmware.cpio"))
+             (else (display "WARNING: Apple Silicon firmware was not found !!!\n\n")
+                   (display "Please set either the ASAHI_GUIX_FIRMWARE_SOURCE environment variable
+to a file named firmware.cpio, or make it in one of the following
+locations available:\n\n")
+                   (display "- /boot/efi/vendorfw/firmware.cpio\n")
+                   (display "- /run/.system-efi/vendorfw/firmware.cpio\n\n")
+                   (local-file "firmware.cpio"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       '(("vendorfw" "lib/firmware"))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'unpack-firmware
+           (lambda _
+             (invoke "cpio" "-idv" "-F" "firmware.cpio"))))))
+    (native-inputs (list cpio))
+    (home-page "https://github.com/r0man/asahi-guix")
+    (synopsis "Asahi Guix firmware for Apple Silicon")
+    (description "The Asahi Guix firmware package uses the Apple Silicon firmware from
+the local machine as source.  The Apple Silicon firmware is
+propriatary and can not be packaged.")
+    (license license:expat)))
 
 (define (make-asahi-linux name config)
   (package
