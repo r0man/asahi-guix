@@ -10,7 +10,7 @@ WIP: Not much is working. 💣
 Build the Guix installation image.
 
 #+begin_src sh :results verbatim
-  guix time-machine -C asahi/channels.scm -- system image -L . --image-type=efi-raw asahi/installer.scm
+  guix time-machine -C asahi/guix/channels.scm -- system image -L . --image-type=efi-raw asahi/guix/installer.scm
 #+end_src
 
 Write the installer to the USB stick at =/dev/sda=.

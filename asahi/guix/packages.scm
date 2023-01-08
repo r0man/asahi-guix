@@ -1,4 +1,4 @@
-(define-module (asahi packages)
+(define-module (asahi guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)

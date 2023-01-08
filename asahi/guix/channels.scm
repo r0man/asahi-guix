@@ -1,4 +1,4 @@
-(define-module (asahi channels)
+(define-module (asahi guix channels)
   #:use-module (guix channels)
   #:export (channels))
 

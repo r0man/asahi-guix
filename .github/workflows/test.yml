@@ -50,7 +50,7 @@ jobs:
       - name: Build packages
         run: |
           guix package -L . -A \
-          | grep asahi/packages \
+          | grep asahi/guix/packages \
           | awk '{print $1}' \
           | grep -v asahi-m1n1 \
           | xargs guix build -L . -v 5
