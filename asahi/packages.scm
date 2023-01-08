@@ -68,7 +68,7 @@
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
-       '(("vendorfw" "lib/firmware/vendor"))
+       '(("vendorfw" "lib/firmware"))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'unpack-firmware
