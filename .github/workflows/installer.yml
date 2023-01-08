@@ -50,6 +50,5 @@ jobs:
       - name: Build installer
         run: |
           guix system image -L . \
-          --image-type=efi-raw \
           --target=aarch64-linux-gnu \
           asahi/installer.scm
