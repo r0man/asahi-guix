@@ -1,8 +1,8 @@
-name: test
+name: installer
 on: [push]
 jobs:
   build:
-    name: Asahi packages
+    name: Asahi Installer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,7 +13,7 @@ jobs:
           key: guix-cache-${{ github.sha }}
           restore-keys: guix-cache-
       - name: Install Guix
-        uses: PromyLOPh/guix-install-action@v1
+        uses: PromyLOPh/guix-install-action@v1.3
         with:
           channels: |
             (list (channel
@@ -47,10 +47,9 @@ jobs:
                       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
       - name: Ensure no locale warning
         run: test -z "$(guix --version 2>&1 >/dev/null)"
-      - name: Build packages
+      - name: Build installer
         run: |
-          guix package -L . -A \
-          | grep asahi/packages \
-          | awk '{print $1}' \
-          | grep -v asahi-m1n1 \
-          | xargs guix build -L . -v 5
+          guix system image -L . \
+          --image-type=efi-raw \
+          --target=aarch64-linux-gnu \
+          asahi/installer.scm
