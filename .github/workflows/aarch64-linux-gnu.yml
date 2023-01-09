@@ -1,9 +1,20 @@
+name: aarch64-linux-gnu
 on: [push]
-name: m1n1
 jobs:
   build:
-    name: Asahi m1n1
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - asahi-firmware
+          - asahi-linux
+          - asahi-linux-edge
+          - asahi-m1n1
+          # - asahi-scripts
+          - lzfse
+          - mesa-asahi-edge
+          # - u-boot-apple-m1
     steps:
       - uses: actions/checkout@v2
       - name: Guix cache
@@ -13,7 +24,7 @@ jobs:
           key: guix-cache-${{ github.sha }}
           restore-keys: guix-cache-
       - name: Install Guix
-        uses: PromyLOPh/guix-install-action@v1.3
+        uses: PromyLOPh/guix-install-action@v1
         with:
           channels: |
             (list (channel
@@ -47,5 +58,8 @@ jobs:
                       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
       - name: Ensure no locale warning
         run: test -z "$(guix --version 2>&1 >/dev/null)"
-      - name: Build m1n1
-        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-m1n1
+      - name: Lint package
+        run: |
+            guix lint -L . ${{ matrix.package }} |& sed -nre 's#(.*):([0-9]+):([0-9]+): (.*)$#::warning file=\1,line=\2,col=\3::\4#gp'
+      - name: Build package
+        run: guix build -L . --target=aarch64-linux-gnu ${{ matrix.package }}
