@@ -1,9 +1,10 @@
-name: test
+name: aarch64-linux-gnu
 on: [push]
 jobs:
   build:
-    name: Asahi packages
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - name: Guix cache
@@ -47,13 +48,24 @@ jobs:
                       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
       - name: Ensure no locale warning
         run: test -z "$(guix --version 2>&1 >/dev/null)"
-      - name: Build mesa
-        run: |
-          guix build -L . -v 5 mesa-asahi-edge
-      - name: Build packages
-        run: |
-          guix package -L . -A \
-          | grep asahi/guix/packages \
-          | awk '{print $1}' \
-          | grep -v asahi-m1n1 \
-          | xargs guix build -L . -v 5
+      - name: Build asahi-firmware
+        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-firmware
+      # TODO: Python does not support cross builds
+      # - name: Build asahi-fwextract
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-fwextract
+      # - name: Build asahi-scripts
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-scripts
+      - name: Build asahi-m1n1
+        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-m1n1
+      - name: Build lzfse
+        run: guix build -L . -v 5 --target=aarch64-linux-gnu lzfse
+      # - name: Build u-boot-apple-m1
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu u-boot-apple-m1
+      # - name: Build mesa-asahi-edge
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu mesa-asahi-edge
+      - name: Build asahi-linux
+        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux
+      - name: Build asahi-linux-edge
+        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux-edge
+      # - name: Build installer
+      #   run: guix system image -L . --image-type=efi-raw -v 5 --target=aarch64-linux-gnu asahi/guix/installer.scm

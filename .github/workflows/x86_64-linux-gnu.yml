@@ -1,9 +1,10 @@
+name: x86_64-linux-gnu
 on: [push]
-name: m1n1
 jobs:
   build:
-    name: Asahi m1n1
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - name: Guix cache
@@ -13,7 +14,7 @@ jobs:
           key: guix-cache-${{ github.sha }}
           restore-keys: guix-cache-
       - name: Install Guix
-        uses: PromyLOPh/guix-install-action@v1.3
+        uses: PromyLOPh/guix-install-action@v1
         with:
           channels: |
             (list (channel
@@ -47,5 +48,23 @@ jobs:
                       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
       - name: Ensure no locale warning
         run: test -z "$(guix --version 2>&1 >/dev/null)"
-      - name: Build m1n1
-        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-m1n1
+      - name: Build asahi-firmware
+        run: guix build -L . -v 5 asahi-firmware
+      - name: Build asahi-fwextract
+        run: guix build -L . -v 5 asahi-fwextract
+      - name: Build asahi-scripts
+        run: guix build -L . -v 5 asahi-scripts
+      # - name: Build asahi-m1n1
+      #   run: guix build -L . -v 5 asahi-m1n1
+      - name: Build lzfse
+        run: guix build -L . -v 5 lzfse
+      - name: Build u-boot-apple-m1
+        run: guix build -L . -v 5 u-boot-apple-m1
+      - name: Build mesa-asahi-edge
+        run: guix build -L . -v 5 mesa-asahi-edge
+      - name: Build asahi-linux
+        run: guix build -L . -v 5 asahi-linux
+      - name: Build asahi-linux-edge
+        run: guix build -L . -v 5 asahi-linux-edge
+      # - name: Build installer
+      #   run: guix system image -L . --image-type=efi-raw -v 5 asahi/guix/installer.scm
