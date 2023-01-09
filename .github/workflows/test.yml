@@ -47,6 +47,9 @@ jobs:
                       "2A39 3FFF 68F4 EF7A 3D29  12AF 6F51 20A0 22FB B2D5")))))
       - name: Ensure no locale warning
         run: test -z "$(guix --version 2>&1 >/dev/null)"
+      - name: Build mesa
+        run: |
+          guix build -L . -v 5 mesa-asahi-edge
       - name: Build packages
         run: |
           guix package -L . -A \
