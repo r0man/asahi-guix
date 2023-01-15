@@ -8,6 +8,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -119,6 +120,29 @@ Air, and MacBook Pro.")))
     (description "A bootloader and experimentation playground for Apple Silicon")
     (license license:expat)))
 
+(define-public lzfse
+  (package
+    (name "lzfse")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lzfse/lzfse.git")
+             (commit (string-append "lzfse-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfh6y6vpvxsdwmqmfbkqkwvxc0pz2dqqc72c6fk9sbsrxxaghd5"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/lzfse/lzfse")
+    (synopsis "LZFSE compression library and command line tool")
+    (description "This is a reference C implementation of the LZFSE compressor
+introduced in the Compression library with OS X 10.11 and iOS 9. LZFSE
+is a Lempel-Ziv style data compression algorithm using Finite State
+Entropy coding. It targets similar compression rates at higher
+compression and decompression speed compared to deflate using zlib")
+    (license license:bsd-3)))
+
 (define-public asahi-fwextract
   (package
     (name "asahi-fwextract")
@@ -133,6 +157,7 @@ Air, and MacBook Pro.")))
        (sha256
         (base32 "1kj9ycy3f34fzm9bnirlcw9zm2sgipwrqzphdg5k099rbjbc7zmj"))))
     (build-system python-build-system)
+    (inputs (list lzfse))
     (home-page "https://github.com/AsahiLinux/asahi-installer")
     (synopsis "Asahi Linux firmware extractor")
     (description "The Asahi Linux firmware extraction tool")
@@ -230,39 +255,39 @@ Air, and MacBook Pro.")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-source
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* "Makefile"
+                 (("PREFIX=/usr/local") "PREFIX="))
+               (substitute* "asahi-fwextract"
+                 (("/usr/share/asahi-scripts/functions.sh")
+                  (string-append out "/share/asahi-scripts/functions.sh"))
+                 (("python3")
+                  (string-append (assoc-ref inputs "python") "/bin/python3")))
+               (substitute* "update-grub"
+                 (("/usr/share/asahi-scripts/functions.sh")
+                  (string-append out "/share/asahi-scripts/functions.sh")))
+               (substitute* "update-m1n1"
+                 (("/usr/share/asahi-scripts/functions.sh")
+                  (string-append out "/share/asahi-scripts/functions.sh"))))))
          (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("PREFIX=/usr/local") "PREFIX="))
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (setenv "DESTDIR" (assoc-ref outputs "out"))))
-         (delete 'check))))
+         (delete 'check)
+         (add-after 'install 'wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (wrap-program (string-append out "/bin/asahi-fwextract")
+                 `("GUIX_PYTHONPATH" ":" prefix
+                   (,(getenv "GUIX_PYTHONPATH")))
+                 `("LD_LIBRARY_PATH" ":" prefix
+                   (,(string-append (assoc-ref inputs "lzfse") "/lib"))))))))))
+    (inputs (list asahi-fwextract lzfse python))
     (home-page "https://github.com/AsahiLinux/asahi-installer")
     (synopsis "Asahi Linux scripts")
     (description "Miscellaneous admin scripts for the Asahi Linux reference distro")
     (license license:expat)))
-
-(define-public lzfse
-  (package
-    (name "lzfse")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/lzfse/lzfse.git")
-             (commit (string-append "lzfse-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1mfh6y6vpvxsdwmqmfbkqkwvxc0pz2dqqc72c6fk9sbsrxxaghd5"))))
-    (build-system cmake-build-system)
-    (home-page "https://github.com/lzfse/lzfse")
-    (synopsis "LZFSE compression library and command line tool")
-    (description "This is a reference C implementation of the LZFSE compressor
-introduced in the Compression library with OS X 10.11 and iOS 9. LZFSE
-is a Lempel-Ziv style data compression algorithm using Finite State
-Entropy coding. It targets similar compression rates at higher
-compression and decompression speed compared to deflate using zlib")
-    (license license:bsd-3)))
 
 (define-public u-boot-apple-m1
   (let ((base (make-u-boot-package "apple_m1" "aarch64-linux-gnu")))
