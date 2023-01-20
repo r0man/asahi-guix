@@ -65,14 +65,14 @@ propriatary and can not be packaged.")
   (package
     (inherit linux-arm64-generic)
     (name name)
-    (version "6.2-rc2-1")
+    (version "6.2-rc3-5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/AsahiLinux/linux/archive/"
                            "refs/tags/asahi-" version ".tar.gz"))
        (sha256
-        (base32 "1r8aj2a0ss25pjf49ddfs1hq5vld1zi5pd3f8y2p2dgi2ji4mqag"))))
+        (base32 "0cc533hbfr227vsc032vsyqll905qrmflcbs0dh2x3w1imsxjgca"))))
     (native-inputs
      `(("kconfig" ,config)
        ("zstd" ,zstd)
