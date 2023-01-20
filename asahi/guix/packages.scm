@@ -189,55 +189,54 @@ compression and decompression speed compared to deflate using zlib")
        ,@(package-inputs libdrm)))))
 
 (define-public mesa-asahi-edge
-  (let ((commit "01a8a3f3d6089d980e7ae56f6e631c8213f0e49d"))
-    (package
-      (inherit mesa)
-      (name "mesa-asahi-edge")
-      (version "23.0.0_pre20221219")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append "https://gitlab.freedesktop.org/asahi/mesa/-/archive/"
-                             commit "/mesa-" commit ".tar.gz"))
-         (sha256
-          (base32 "1frgb87n3r86s02iw5szby5rgg8pc4dn3cwfcsfhn4sk42kz1hxq"))))
-      (arguments
-       (substitute-keyword-arguments (package-arguments mesa)
-         ((#:configure-flags flags)
-          `(list "-Db_ndebug=true"
-                 "-Db_lto=false"
-                 "-Dplatforms=x11,wayland"
-                 "-Dgallium-drivers=swrast,virgl,kmsro,asahi"
-                 "-Dvulkan-drivers=swrast"
-                 "-Dvulkan-layers="
-                 "-Ddri3=enabled"
-                 "-Degl=enabled"
-                 "-Dgallium-extra-hud=true"
-                 "-Dgallium-opencl=disabled"
-                 "-Dgallium-rusticl=false"
-                 "-Dgallium-va=disabled"
-                 "-Dgallium-vdpau=disabled"
-                 "-Dgallium-xa=disabled"
-                 "-Dgbm=enabled"
-                 "-Dgles1=disabled"
-                 "-Dgles2=enabled"
-                 "-Dglvnd=true"
-                 "-Dglx=dri"
-                 "-Dlibunwind=disabled"
-                 "-Dllvm=enabled"
-                 ;; "-Dlmsensors=enabled"
-                 "-Dosmesa=true"
-                 "-Dshared-glapi=enabled"
-                 "-Dmicrosoft-clc=disabled"
-                 "-Dvalgrind=enabled"))))
-      (inputs
-       `(("libdrm" ,libdrm-2-4-114)
-         ("libglvnd" ,libglvnd)
-         ;; ("lm-sensors" ,lm-sensors)
-         ("openssl" ,libressl)
-         ("valgrind" ,valgrind)
-         ("wayland-protocols" ,wayland-protocols-next)
-         ,@(package-inputs mesa))))))
+  (package
+    (inherit mesa)
+    (name "mesa-asahi-edge")
+    (version "20221229")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://gitlab.freedesktop.org/asahi/mesa/-/archive/"
+                           "asahi-" version "/mesa-asahi-" version ".tar.gz"))
+       (sha256
+        (base32 "1gg0msrx2d2mgif4jqljns8nqf29nazqpxcxmjaa50yf50n6n05p"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mesa)
+       ((#:configure-flags flags)
+        `(list "-Db_ndebug=true"
+               "-Db_lto=false"
+               "-Dplatforms=x11,wayland"
+               "-Dgallium-drivers=swrast,virgl,kmsro,asahi"
+               "-Dvulkan-drivers=swrast"
+               "-Dvulkan-layers="
+               "-Ddri3=enabled"
+               "-Degl=enabled"
+               "-Dgallium-extra-hud=true"
+               "-Dgallium-opencl=disabled"
+               "-Dgallium-rusticl=false"
+               "-Dgallium-va=disabled"
+               "-Dgallium-vdpau=disabled"
+               "-Dgallium-xa=disabled"
+               "-Dgbm=enabled"
+               "-Dgles1=disabled"
+               "-Dgles2=enabled"
+               "-Dglvnd=true"
+               "-Dglx=dri"
+               "-Dlibunwind=disabled"
+               "-Dllvm=enabled"
+               ;; "-Dlmsensors=enabled"
+               "-Dosmesa=true"
+               "-Dshared-glapi=enabled"
+               "-Dmicrosoft-clc=disabled"
+               "-Dvalgrind=enabled"))))
+    (inputs
+     `(("libdrm" ,libdrm-2-4-114)
+       ("libglvnd" ,libglvnd)
+       ;; ("lm-sensors" ,lm-sensors)
+       ("openssl" ,libressl)
+       ("valgrind" ,valgrind)
+       ("wayland-protocols" ,wayland-protocols-next)
+       ,@(package-inputs mesa)))))
 
 (define-public asahi-scripts
   (package
