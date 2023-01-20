@@ -95,23 +95,22 @@ Air, and MacBook Pro.")))
     (version "1.2.3")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AsahiLinux/m1n1.git")
-             (commit "fb36e302363cbe505da856f127bc0ae5e4a11257")))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://github.com/AsahiLinux/m1n1/archive/v"
+                           version ".tar.gz"))
        (sha256
-        (base32 "0fm8vhdi75nfwm3n9wy5hrg26wa10h2bgba3250jfv2lg62rsd50"))))
+        (base32 "12jjx7cmrpmxhb9zhfawnmqi74gka7wb67mfyi91zldmp7dzmjqr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
+             (setenv "ARCH" "")
              (setenv "RELEASE" "1")))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((dir (string-append (assoc-ref outputs "out") "/usr/lib/")))
+             (let ((dir (string-append (assoc-ref outputs "out") "/usr/lib/asahi-boot/")))
                (mkdir-p dir)
                (copy-file "build/m1n1.bin" (string-append dir "m1n1.bin")))))
          (delete 'check))))
