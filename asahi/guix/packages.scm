@@ -24,7 +24,6 @@
   #:use-module (guix packages)
   #:use-module (guix transformations)
   #:use-module (guix utils)
-  #:use-module (nongnu packages linux)
   #:use-module (srfi srfi-1))
 
 (define-public asahi-firmware
@@ -64,7 +63,7 @@ propriatary and can not be packaged.")
 
 (define (make-asahi-linux name config)
   (package
-    (inherit linux-arm64-generic)
+    (inherit linux-libre-arm64-generic)
     (name name)
     (version "6.2-rc3-5")
     (source
@@ -77,7 +76,7 @@ propriatary and can not be packaged.")
     (native-inputs
      `(("kconfig" ,config)
        ("zstd" ,zstd)
-       ,@(alist-delete "kconfig" (package-native-inputs linux-arm64-generic))))
+       ,@(alist-delete "kconfig" (package-native-inputs linux-libre-arm64-generic))))
     (home-page "https://asahilinux.org")
     (synopsis "Linux on Apple Silicon")
     (description "Asahi Linux is a project and community with the goal of porting Linux
