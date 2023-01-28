@@ -1,7 +1,7 @@
 * Asahi Guix
 
-[[https://github.com/r0man/asahi-guix/actions/workflows/test.yml][https://github.com/r0man/asahi-guix/actions/workflows/test.yml/badge.svg]]
-[[https://github.com/r0man/asahi-guix/actions/workflows/m1n1.yml][https://github.com/r0man/asahi-guix/actions/workflows/m1n1.yml/badge.svg]]
+[[https://github.com/r0man/asahi-guix/actions/workflows/aarch64-linux-gnu.yml][https://github.com/r0man/asahi-guix/actions/workflows/aarch64-linux-gnu.yml/badge.svg]]
+[[https://github.com/r0man/asahi-guix/actions/workflows/x86_64-linux-gnu.yml][https://github.com/r0man/asahi-guix/actions/workflows/x86_64-linux-gnu.yml/badge.svg]]
 
 WIP: Not much is working. 💣
 
