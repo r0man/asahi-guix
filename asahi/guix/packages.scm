@@ -26,6 +26,29 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
+(define-public alsa-ucm-conf-asahi
+  (package
+    (name "alsa-ucm-conf-asahi")
+    (version "1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/povik/alsa-ucm-conf-asahi/archive/v" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rw16mk0msj518aq8prjhm0m9fm3x26zrxz7wnc2nxnw52vzbdaa"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan
+       '(("ucm2" "share/alsa/ucm2"))))
+    (home-page "https://github.com/AsahiLinux/alsa-ucm-conf-asahi")
+    (synopsis "The Advanced Linux Sound Architecture Use Case Manager")
+    (description
+     "This package contains Advanced Linux Sound Architecture Use Case Manager
+configuration of audio input/output names and routing for specific audio
+hardware.")
+    (license license:bsd-3)))
+
 (define-public asahi-firmware
   (package
     (name "asahi-firmware")
