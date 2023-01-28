@@ -26,12 +26,16 @@ Status:
 
 ** Packages
 
-- asahi-firmware
-- asahi-fwextract
-- asahi-linux
-- asahi-linux-edge
-- asahi-m1n1
-- asahi-scripts
-- lzfse
-- mesa-asahi-edge
-- u-boot-apple-m1
+The Asahi Guix channel provides the following packages.
+
+| Guix             | Asahi           |
+|------------------+-----------------|
+| asahi-firmware   | n/a             |
+| asahi-fwextract  | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/asahi-fwextract][asahi-fwextract]] |
+| asahi-linux      | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/linux-asahi][linux-asahi]]     |
+| asahi-linux-edge | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/linux-asahi][linux-asahi]]     |
+| asahi-m1n1       | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/m1n1][m1n1]]            |
+| asahi-scripts    | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/asahi-scripts][asahi-scripts]]   |
+| lzfse            | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/lzfse][lzfse]]           |
+| mesa-asahi-edge  | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/mesa-asahi-edge][mesa-asahi-edge]] |
+| u-boot-apple-m1  | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/uboot-asahi][uboot-asahi]]     |
