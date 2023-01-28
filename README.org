@@ -3,9 +3,26 @@
 [[https://github.com/r0man/asahi-guix/actions/workflows/aarch64-linux-gnu.yml][https://github.com/r0man/asahi-guix/actions/workflows/aarch64-linux-gnu.yml/badge.svg]]
 [[https://github.com/r0man/asahi-guix/actions/workflows/x86_64-linux-gnu.yml][https://github.com/r0man/asahi-guix/actions/workflows/x86_64-linux-gnu.yml/badge.svg]]
 
-WIP: Not much is working. 💣
+Asahi Linux on GNU Guix
 
-** Guix Installer
+** Status
+
+Experimental
+
+** Installation
+
+*** Manual
+
+Manual installation of the Guix system from an Asahi Linux installation works.
+
+*** Guix Installer
+
+💣 The installation with the Guix system installer does not work at
+the moment. Grub boots into early Guile with keyboard available, but
+fails to find the system partitions. Seems to be an issue with USB,
+the =/dev/sd*= devices are missing.
+
+**** Installation via USB stick
 
 Build the Guix installation image.
 
@@ -19,10 +36,35 @@ Write the installer to the USB stick at =/dev/sda=.
   sudo dd if=/gnu/store/mddmv1mrwln08q3nl5sg7czxd06jws0p-disk-image of=/dev/sda bs=4M status=progress oflag=sync
 #+end_src
 
-Status:
-- Keyboard works
-- Boots Grub and Guile
-- Fails to find disks?
+** Firmware
+
+The firmware required to boot Linux on Apple silicon is proprietary
+and cannot be packaged with Asahi Guix. Instead the =asahi-firmware=
+Guix package assumes for now that the firmware is available in the
+=/boot/efi/vendorfw/firmware.cpio= archive at build time.
+
+When installing Asahi Linux or an UEFI stand-alone system with the
+Asahi Linux installer, the Apple silicon firmware will be saved in the
+=asahi/all_firmware.tar.gz= archive on the EFI system partition.
+
+The [[https://github.com/AsahiLinux/asahi-scripts/blob/main/asahi-fwextract][asahi-fwextract]] script reads the firmware from the
+=asahi/all_firmware.tar.gz= archive and writes it to the =vendorfw=
+directory of the EFI system partition as a CPIO and TAR archive. The
+EFI system partition should be mounted on =/boot/efi= to make these
+firmware files available.
+
+On an Asahi Linux system this should already be the case, on an Asahi
+Guix system the EFI system partition can be mounted by adding the
+following file system to the =file-systems= field of your
+=operating-system= record. Please change the UUID to the one of your
+system.
+
+#+begin_src scheme
+  (file-system
+    (mount-point "/boot/efi")
+    (device (uuid "9FBE-130E" 'fat32))
+    (type "vfat"))
+#+end_src
 
 ** Packages
 
