@@ -88,14 +88,14 @@ propriatary and can not be packaged.")
   (package
     (inherit linux-libre-arm64-generic)
     (name name)
-    (version "6.2-rc3-5")
+    (version "6.2-rc3-6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/AsahiLinux/linux/archive/"
                            "refs/tags/asahi-" version ".tar.gz"))
        (sha256
-        (base32 "0cc533hbfr227vsc032vsyqll905qrmflcbs0dh2x3w1imsxjgca"))))
+        (base32 "0bk4grzcizk48hhalyyaa4alk5069z102vx5ddw12jfqzsrdfccn"))))
     (native-inputs
      `(("kconfig" ,config)
        ("zstd" ,zstd)
