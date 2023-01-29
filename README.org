@@ -79,6 +79,7 @@ The Asahi Guix channel provides the following packages.
 | Guix                | Asahi               |
 |---------------------+---------------------|
 | alsa-ucm-conf-asahi | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/alsa-ucm-conf-asahi][alsa-ucm-conf-asahi]] |
+| asahi-audio         | [[https://github.com/chadmed/asahi-audio][asahi-audio]]         |
 | asahi-firmware      | n/a                 |
 | asahi-fwextract     | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/asahi-fwextract][asahi-fwextract]]     |
 | asahi-linux         | [[https://github.com/AsahiLinux/PKGBUILDs/tree/main/linux-asahi][linux-asahi]]         |

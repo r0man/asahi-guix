@@ -50,6 +50,8 @@ jobs:
         run: test -z "$(guix --version 2>&1 >/dev/null)"
       - name: Build alsa-ucm-conf-asahi
         run: guix build -L . -v 5 alsa-ucm-conf-asahi
+      - name: Build asahi-audio
+        run: guix build -L . -v 5 asahi-audio
       - name: Build asahi-firmware
         run: guix build -L . -v 5 asahi-firmware
       - name: Build asahi-fwextract
