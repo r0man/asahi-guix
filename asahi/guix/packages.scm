@@ -3,17 +3,21 @@
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages python)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages xdisorg)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -24,6 +28,7 @@
   #:use-module (guix packages)
   #:use-module (guix transformations)
   #:use-module (guix utils)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
 (define-public asahi-audio
@@ -117,6 +122,73 @@ the local machine as source.  The Apple Silicon firmware is
 propriatary and can not be packaged.")
     (license license:expat)))
 
+(define-public jemalloc-16k
+  (package
+    (inherit jemalloc)
+    (version "5.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/jemalloc/jemalloc/releases/download/"
+                    version "/jemalloc-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1apyxjd1ixy4g8xkr61p0ny8jiz8vyv1j0k4nxqkxpqrf4g2vf1d"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments jemalloc)
+       ((#:configure-flags base-configure-flags '())
+        (match (%current-system)
+          ("aarch64-linux"
+           `(cons "--with-lg-page=14" ,base-configure-flags))
+          (_ base-configure-flags)))))))
+
+(define-public rust-bindgen-cli
+  (package
+    (name "rust-bindgen-cli")
+    (version "0.59.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen-cli" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1f4fpycxmbrqk8r2x9brhfgjh86mzc6bngn4a9631x78b2jaklib"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.59))
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'disable-commandline-multiple-headers-test
+           (lambda* (#:key outputs #:allow-other-keys)
+             (substitute* "src/main.rs"
+               (("fn commandline_multiple_headers")
+                "#[ignore]\n    fn commandline_multiple_headers")))))))
+    (inputs (list clang))
+    (home-page "https://rust-lang.github.io/rust-bindgen/")
+    (synopsis "Generate Rust FFI bindings to C and C++ libraries")
+    (description "This package is the CLI to rust-bindgen and can be used to
+automatically generate Rust FFI bindings to C and C++ libraries.")
+    (license license:bsd-3)))
+
+(define-public rust-src-1.62
+  (hidden-package
+   (package
+     (inherit (@@ (gnu packages rust) rust-1.62))
+     (name "rust-src")
+     (build-system copy-build-system)
+     (native-inputs '())
+     (inputs '())
+     (native-search-paths '())
+     (outputs '("out"))
+     (arguments
+      `(#:install-plan
+        '(("library" "lib/rustlib/src/rust/library")
+          ("src" "lib/rustlib/src/rust/src"))))
+     (synopsis "Source code for the Rust standard library")
+     (description "This package provide source code for the Rust standard
+library, only use by rust-analyzer, make rust-analyzer out of the box."))))
+
 (define (make-asahi-linux name config)
   (package
     (inherit linux-libre-arm64-generic)
@@ -129,8 +201,25 @@ propriatary and can not be packaged.")
                            "refs/tags/asahi-" version ".tar.gz"))
        (sha256
         (base32 "0bk4grzcizk48hhalyyaa4alk5069z102vx5ddw12jfqzsrdfccn"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments linux-libre-arm64-generic)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'configure 'configure-rust
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "LIBCLANG_PATH"
+                        (string-append (assoc-ref inputs "clang") "/lib"))
+                (setenv "RUST_LIB_SRC"
+                        (string-append (assoc-ref inputs "rust-src")
+                                       "/lib/rustlib/src/rust/library"))))))))
     (native-inputs
-     `(("kconfig" ,config)
+     `(("clang", clang)
+       ("kconfig" ,config)
+       ("llvm" ,llvm)
+       ("python" ,python)
+       ("rust" ,(@@ (gnu packages rust) rust-1.62))
+       ("rust-bindgen-cli" ,rust-bindgen-cli)
+       ("rust-src" ,rust-src-1.62)
        ("zstd" ,zstd)
        ,@(alist-delete "kconfig" (package-native-inputs linux-libre-arm64-generic))))
     (home-page "https://asahilinux.org")

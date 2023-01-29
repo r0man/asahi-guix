@@ -67,9 +67,9 @@ jobs:
       #   run: guix build -L . -v 5 --target=aarch64-linux-gnu u-boot-apple-m1
       # - name: Build mesa-asahi-edge
       #   run: guix build -L . -v 5 --target=aarch64-linux-gnu mesa-asahi-edge
-      - name: Build asahi-linux
-        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux
-      - name: Build asahi-linux-edge
-        run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux-edge
+      # - name: Build asahi-linux
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux
+      # - name: Build asahi-linux-edge
+      #   run: guix build -L . -v 5 --target=aarch64-linux-gnu asahi-linux-edge
       # - name: Build installer
       #   run: guix system image -L . --image-type=efi-raw -v 5 --target=aarch64-linux-gnu asahi/guix/installer.scm
