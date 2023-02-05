@@ -1,5 +1,6 @@
 (define-module (asahi guix packages)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (asahi guix packages jemalloc)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
@@ -8,7 +9,6 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages imagemagick)
-  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages python)
@@ -121,26 +121,6 @@ locations available:\n\n")
 the local machine as source.  The Apple Silicon firmware is
 propriatary and can not be packaged.")
     (license license:expat)))
-
-(define-public jemalloc-16k
-  (package
-    (inherit jemalloc)
-    (version "5.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/jemalloc/jemalloc/releases/download/"
-                    version "/jemalloc-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1apyxjd1ixy4g8xkr61p0ny8jiz8vyv1j0k4nxqkxpqrf4g2vf1d"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments jemalloc)
-       ((#:configure-flags base-configure-flags '())
-        (match (%current-system)
-          ("aarch64-linux"
-           `(cons "--with-lg-page=14" ,base-configure-flags))
-          (_ base-configure-flags)))))))
 
 (define-public rust-bindgen-cli
   (package
