@@ -226,6 +226,18 @@ Air, and MacBook Pro."))))
 (define-public asahi-linux-edge
   (make-asahi-linux "asahi-linux-edge" (local-file "kernel.edge.config")))
 
+(define-public asahi-bootlogo
+  (package
+    (name "asahi-bootlogo")
+    (version "0.0.1")
+    (source (local-file "bootlogo.svg"))
+    (build-system copy-build-system)
+    (home-page "https://www.gnu.org/graphics/heckert_gnu.html")
+    (synopsis "A Bold GNU Head SVG")
+    (description "A bolder and simpler version of the famous GNU logo, which looks great
+at low resolutions and works well at high resolutions for printing.")
+    (license license:expat)))
+
 (define-public asahi-m1n1
   (package
     (name "asahi-m1n1")
@@ -242,6 +254,28 @@ Air, and MacBook Pro."))))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'bootlogo
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bootlogo (assoc-ref inputs "asahi-bootlogo"))
+                    (bootlogo-input (string-append bootlogo "/bootlogo.svg"))
+                    (bootlogo-path (string-append out "/bootlogo.png")))
+               (when (file-exists? bootlogo-input)
+                 (chdir "data")
+                 (delete-file "bootlogo_128.png")
+                 (invoke "convert"
+                         "-background" "none"
+                         "-resize" "128x128"
+                         bootlogo-input
+                         "bootlogo_128.png")
+                 (delete-file "bootlogo_256.png")
+                 (invoke "convert"
+                         "-background" "none"
+                         "-resize" "256x256"
+                         bootlogo-input
+                         "bootlogo_256.png")
+                 (invoke "./makelogo.sh")
+                 (chdir "..")))))
          (replace 'configure
            (lambda* (#:key outputs #:allow-other-keys)
              (setenv "RELEASE" "1")))
@@ -253,6 +287,7 @@ Air, and MacBook Pro."))))
          ;; There are no tests
          (delete 'check))))
     (home-page "https://github.com/AsahiLinux/m1n1")
+    (native-inputs (list asahi-bootlogo imagemagick))
     (synopsis "Boot loader and experimentation playground for Apple Silicon")
     (description "m1n1 is the bootloader developed by the Asahi Linux project to bridge
 the Apple (XNU) boot ecosystem to the Linux boot ecosystem.")
