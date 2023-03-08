@@ -258,20 +258,19 @@ at low resolutions and works well at high resolutions for printing.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bootlogo (assoc-ref inputs "asahi-bootlogo"))
-                    (bootlogo-input (string-append bootlogo "/bootlogo.svg"))
-                    (bootlogo-path (string-append out "/bootlogo.png")))
+                    (bootlogo-input (string-append bootlogo "/bootlogo.svg")))
                (when (file-exists? bootlogo-input)
                  (chdir "data")
                  (delete-file "bootlogo_128.png")
                  (invoke "convert"
                          "-background" "none"
-                         "-resize" "128x128"
+                         "-resize" "128x128!"
                          bootlogo-input
                          "bootlogo_128.png")
                  (delete-file "bootlogo_256.png")
                  (invoke "convert"
                          "-background" "none"
-                         "-resize" "256x256"
+                         "-resize" "256x256!"
                          bootlogo-input
                          "bootlogo_256.png")
                  (invoke "./makelogo.sh")
