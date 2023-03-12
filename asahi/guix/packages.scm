@@ -1,7 +1,9 @@
 (define-module (asahi guix packages)
   #:use-module ((asahi guix packages jemalloc) #:prefix jemalloc-next:)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages bootloaders)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages crates-io)
@@ -18,6 +20,7 @@
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages xdisorg)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
@@ -69,6 +72,54 @@
     (synopsis "Linux audio configuration for Apple Silicon Macs")
     (description "Linux userspace audio configuration for Apple Silicon Macs.")
     (license license:expat)))
+
+(define-public grub-next
+  (package/inherit grub
+    (name "grub-next")
+    (version "88478417315b652850e36ff7f3f63f6bcf399e84")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.savannah.gnu.org/git/grub.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0awhn1wkqvfv80yhxb2n0j0hws9phy0svbbvymxjhdj8gv3l4z8n"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments grub)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'patch-stuff
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                (substitute* "autogen.sh"
+                  (("/usr/bin/env") (which "env")))
+
+                ;; Give the absolute file name of 'mdadm', used to determine the
+                ;; root file system when it's a RAID device.  Failing to do that,
+                ;; 'grub-probe' silently fails if 'mdadm' is not in $PATH.
+                (when (assoc-ref inputs "mdadm")
+                  (substitute* "grub-core/osdep/linux/getroot.c"
+                    (("argv\\[0\\] = \"mdadm\"")
+                     (string-append "argv[0] = \""
+                                    (assoc-ref inputs "mdadm")
+                                    "/sbin/mdadm\""))))
+
+                ;; Make the font visible.
+                (copy-file (assoc-ref (or native-inputs inputs)
+                                      "unifont")
+                           "unifont.bdf.gz")
+                (system* "gunzip" "unifont.bdf.gz")
+
+                ;; Give the absolute file name of 'ckbcomp'.
+                (substitute* "util/grub-kbdcomp.in"
+                  (("^ckbcomp ")
+                   (string-append
+                    (search-input-file inputs "/bin/ckbcomp")
+                    " ")))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs grub)
+       (prepend autoconf automake git gnulib python)))))
 
 (define-public alsa-ucm-conf-asahi
   (package
