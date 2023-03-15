@@ -1,7 +1,7 @@
 (define-module (asahi guix system base)
+  #:use-module (asahi guix bootloader m1n1)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages)
-  #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages gnome)
@@ -83,7 +83,7 @@
     (timezone timezone)
     (keyboard-layout keyboard-layout)
     (bootloader (bootloader-configuration
-                 (bootloader grub-efi-removable-bootloader)
+                 (bootloader m1n1-u-boot-grub-bootloader)
                  (targets (list "/boot/efi"))
                  (keyboard-layout keyboard-layout)))
     (kernel kernel)

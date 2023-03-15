@@ -25,3 +25,14 @@ Build the Asahi Guix operarating system image using the edge kernel.
 #+begin_src sh :results verbatim
   guix system image -L . --image-type=efi-raw asahi/guix/system/edge.scm
 #+end_src
+
+** Test System
+
+#+begin_src sh
+  sudo blkid | grep /dev/nvme0n1p10 | sed -n 's/.* UUID="\([^"]*\)".*/\1/p'
+  sudo mkfs.ext4 -L asahi-guix-root /dev/nvme0n1p12
+  sudo mount /dev/nvme0n1p12 /mnt
+  sudo mkdir --parents /mnt/boot/efi
+  sudo mount /dev/nvme0n1p10 /mnt/boot/efi
+  sudo guix system init --load-path=. --system=aarch64-linux examples/asahi-guix-edge.tmpl /mnt
+#+end_src

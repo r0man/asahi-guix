@@ -1,6 +1,7 @@
 (define-module (asahi guix packages)
   #:use-module ((asahi guix packages jemalloc) #:prefix jemalloc-next:)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages compression)
