@@ -1,14 +1,16 @@
 (define-module (asahi guix packages jemalloc)
+  #:use-module ((gnu packages jemalloc) #:prefix gnu:)
+  #:use-module ((guix licenses) #:select (bsd-2))
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix packages)
+  #:use-module (guix utils)
+  #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match)
-  #:use-module ((guix licenses) #:select (bsd-2))
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix utils)
-  #:use-module (gnu packages)
-  #:use-module (gnu packages perl)
-  #:use-module (guix build-system gnu))
+  #:export (replace-jemalloc))
 
 (define-public jemalloc-4.5.0
   (package
@@ -64,10 +66,13 @@ fragmentation avoidance and scalable concurrency support.")
                (base32
                 "1apyxjd1ixy4g8xkr61p0ny8jiz8vyv1j0k4nxqkxpqrf4g2vf1d"))))
     (arguments
-      (substitute-keyword-arguments (package-arguments jemalloc-4.5.0)
-        ;; Disable the thread local storage model in jemalloc 5 to prevent
-        ;; shared libraries linked to libjemalloc from crashing on dlopen()
-        ;; https://github.com/jemalloc/jemalloc/issues/937
-        ((#:configure-flags base-configure-flags '())
-         `(cons "--disable-initial-exec-tls" ,base-configure-flags))))
+     (substitute-keyword-arguments (package-arguments jemalloc-4.5.0)
+       ;; Disable the thread local storage model in jemalloc 5 to prevent
+       ;; shared libraries linked to libjemalloc from crashing on dlopen()
+       ;; https://github.com/jemalloc/jemalloc/issues/937
+       ((#:configure-flags base-configure-flags '())
+        `(cons "--disable-initial-exec-tls" ,base-configure-flags))))
     (inputs (list perl))))
+
+(define replace-jemalloc
+  (package-input-rewriting `((,gnu:jemalloc . ,jemalloc))))

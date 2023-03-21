@@ -1,5 +1,6 @@
 (define-module (asahi guix bootloader m1n1)
-  #:use-module (asahi guix packages)
+  #:use-module (asahi guix packages bootloader)
+  #:use-module (asahi guix packages linux)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages compression)

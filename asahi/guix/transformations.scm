@@ -1,6 +1,7 @@
 (define-module (asahi guix transformations)
-  #:use-module ((asahi guix packages))
   #:use-module ((asahi guix packages jemalloc) #:prefix next:)
+  #:use-module (asahi guix packages gl)
+  #:use-module (asahi guix packages xdisorg)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages xdisorg)

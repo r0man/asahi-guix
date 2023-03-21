@@ -1,7 +1,7 @@
 (define-module (asahi guix install edge)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix install base)
-  #:use-module (asahi guix packages)
+  #:use-module (asahi guix packages linux)
   #:use-module (gnu system)
   #:export (asahi-installation-os-edge))
 

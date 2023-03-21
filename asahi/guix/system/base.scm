@@ -1,7 +1,9 @@
 (define-module (asahi guix system base)
   #:use-module (asahi guix bootloader m1n1)
   #:use-module (asahi guix initrd)
-  #:use-module (asahi guix packages)
+  #:use-module (asahi guix packages firmware)
+  #:use-module (asahi guix packages linux)
+  #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages gnome)
@@ -54,7 +56,8 @@
          %base-packages))
 
 (define %services
-  (cons* (service dhcp-client-service-type)
+  (cons* (service network-manager-service-type)
+         (service wpa-supplicant-service-type)
          (service openssh-service-type
                   (openssh-configuration
                    (openssh openssh-sans-x)))
@@ -65,7 +68,7 @@
          (name "guest")
          (comment "Guest")
          (group "users")
-         (supplementary-groups '("wheel" "audio" "video")))
+         (supplementary-groups '("wheel" "audio" "netdev" "video")))
         %base-user-accounts))
 
 (define* (make-operating-system #:key

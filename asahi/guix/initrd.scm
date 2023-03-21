@@ -5,6 +5,7 @@
 (define initrd-modules
   (list "dm-crypt"
         "hid-apple"
+        ;; "hid-generic"
         "nls_iso8859-1"
         "serpent_generic"
         "uas"
@@ -33,7 +34,7 @@
    "phy-apple-atc"
    "tps6598x"
    "xhci-pci"
-   ;;"gpio_macsmc"
+   ;; "gpio_macsmc"
    ;; For HID
    "spi-apple"
    "spi-hid-apple"
@@ -41,18 +42,18 @@
    ;; For RTC
    "rtc-macsmc"
    "simple-mfd-spmi"
-   ;; "spmi-apple-controller"
+   "spmi-apple-controller"
    "nvmem_spmi_mfd"
    ;; For MTP HID
    "apple-dockchannel"
    "dockchannel-hid"
-   ;; "apple-rtkit-helper"
+   "apple-rtkit-helper"
    initrd-modules))
 
 (define asahi-initrd-modules-edge
   (cons*
    ;; For NVMe & SMC
-   "apple-mailbox"
+   ;; "apple-mailbox"
    ;; For NVMe
    "nvme-apple"
    ;; For USB and HID
