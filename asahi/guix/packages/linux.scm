@@ -42,6 +42,7 @@
 
 (define* (make-asahi-linux name
                            #:key
+                           (audio? #t)
                            (defconfig (local-file "defconfig.main"))
                            (extra-options %default-extra-linux-options)
                            (extra-version #f)
@@ -62,6 +63,23 @@
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
+              (add-before 'configure 'configure-audio
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (when #$audio?
+                    (for-each
+                     (lambda (file)
+                       (let ((path (string-append "arch/arm64/boot/dts/apple/"
+                                                  file)))
+                         (when (file-exists? path)
+                           (substitute* path
+                             (("status = \"disabled\";")
+                              "status = \"okay\";")))))
+                     '("t600x-j314-j316.dtsi"
+                       "t600x-j375.dtsi"
+                       "t8103-j293.dts"
+                       "t8103-j313.dts"
+                       "t8112-j413.dts"
+                       "t8112-j493.dts")))))
               (add-before 'configure 'configure-sublevel
                 (lambda* (#:key inputs #:allow-other-keys)
                   (let ((sublevel (caddr (string-split
