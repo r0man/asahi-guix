@@ -22,27 +22,29 @@
 (define config->string
   (@@ (gnu packages linux) config->string))
 
-(define (make-asahi-linux-source version hash)
+(define (make-asahi-linux-source commit hash)
   (origin
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/AsahiLinux/linux.git")
-          (commit (string-append "asahi-" version))))
-    (file-name (git-file-name "make-asahi-linux-" version))
+          (commit commit)))
+    (file-name (git-file-name "linux-source" commit))
     (sha256
      (base32 hash))))
 
 (define asahi-linux-source-6.2.11
-  (make-asahi-linux-source "6.2-11" "16ddgn4f4wdqj2q2qp4wx7gxzlcwq9p5lsbq0jvffagybf53qyz6"))
+  (make-asahi-linux-source
+   "asahi-6.2-11" "16ddgn4f4wdqj2q2qp4wx7gxzlcwq9p5lsbq0jvffagybf53qyz6"))
 
 (define asahi-linux-source-6.2.12
-  (make-asahi-linux-source "6.2-12" "0ips1gx627v4wkskam1xzkdlnv3f0f0vi4z50cznrnh29sbj8y2s"))
+  (make-asahi-linux-source
+   "asahi-6.2-12" "0ips1gx627v4wkskam1xzkdlnv3f0f0vi4z50cznrnh29sbj8y2s"))
 
 (define* (make-asahi-linux name
                            #:key
                            (defconfig (local-file "defconfig.main"))
                            (extra-options %default-extra-linux-options)
-                           (extra-version "asahi")
+                           (extra-version #f)
                            (linux linux-libre-arm64-generic)
                            (source asahi-linux-source-6.2.11)
                            (version "6.2.11"))
@@ -56,11 +58,19 @@
     (package
       (inherit base)
       (name name)
-      (version version)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)
           #~(modify-phases #$phases
+              (add-before 'configure 'configure-sublevel
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((sublevel (caddr (string-split
+                                          #$version
+                                          (lambda (c)
+                                            (equal? #\. c))))))
+                    (substitute* "Makefile"
+                      (("SUBLEVEL = .*")
+                       (string-append "SUBLEVEL = " sublevel "\n"))))))
               (add-before 'configure 'configure-bindgen
                 (lambda* (#:key inputs #:allow-other-keys)
                   (let ((bindgen (assoc-ref inputs "rust-bindgen-cli")))
