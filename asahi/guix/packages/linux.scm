@@ -51,7 +51,7 @@
   (let ((base (customize-linux
                #:configs (config->string (or extra-options '()))
                #:defconfig defconfig
-               #:linux linux
+               #:linux (package/inherit linux (version version))
                #:name name
                #:source source
                #:extra-version extra-version)))
