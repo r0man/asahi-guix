@@ -9,6 +9,7 @@
   #:use-module (gnu packages valgrind)
   #:use-module (guix build-system meson)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix utils))
@@ -81,6 +82,29 @@
                            "/mesa-demos-" version ".tar.bz2"))
        (sha256 (base32 "1hdaf7pnh5h4f16pzrxqw3g5s37r5dkimsy46pv316phh05dz8nf"))))
     (build-system meson-build-system)
+    (inputs
+     (modify-inputs (package-inputs mesa-utils)
+       (replace "mesa" asahi-mesa)))))
+
+(define-public asahi-mesa-utils-9.0.0
+  (package/inherit mesa-utils
+    (name "asahi-mesa-utils")
+    (version "9.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://mesa.freedesktop.org/archive/demos/mesa-demos-"
+             version ".tar.xz"))
+       (sha256 (base32 "0ss9xpqykwfzkhr55nbfml61dsxz4dgpl9fxxgvil1bvdb9a6iih"))))
+    (build-system meson-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments mesa-utils)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases %standard-phases
+            (add-before 'build 'fail
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke "exit" "1")))))))
     (inputs
      (modify-inputs (package-inputs mesa-utils)
        (replace "mesa" asahi-mesa)))))
