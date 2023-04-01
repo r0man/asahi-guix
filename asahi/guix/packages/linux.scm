@@ -73,7 +73,7 @@
                          (when (file-exists? path)
                            (substitute* path
                              (("status = \"disabled\";")
-                              "status = \"ok\";")))))
+                              "status = \"okay\";")))))
                      '("t600x-j314-j316.dtsi"
                        "t600x-j375.dtsi"
                        "t8103-j293.dts"
