@@ -1,5 +1,6 @@
 (define-module (asahi guix system base)
   #:use-module (asahi guix bootloader m1n1)
+  #:use-module (asahi guix firmware)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
   #:use-module (asahi guix packages linux)
@@ -17,9 +18,12 @@
   #:use-module (gnu system accounts)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system keyboard)
+  #:use-module (gnu system linux-initrd)
   #:use-module (gnu system nss)
   #:use-module (gnu system shadow)
   #:use-module (gnu system)
+  #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (ice-9 optargs)
   #:export (make-operating-system))
@@ -71,6 +75,15 @@
          (supplementary-groups '("wheel" "audio" "netdev" "video")))
         %base-user-accounts))
 
+(define pre-mount
+  (with-imported-modules (source-module-closure
+                          '((asahi guix firmware)))
+    #~(begin
+        (display ":: Asahi Guix: Pre mount hook.\n")
+        (use-modules (asahi guix firmware))
+        (setup-firmware)
+        #t)))
+
 (define* (make-operating-system #:key
                                 (efi-uuid #f)
                                 (host-name "asahi-guix")
@@ -91,6 +104,10 @@
                  (keyboard-layout keyboard-layout)))
     (kernel kernel)
     (kernel-arguments %kernel-arguments)
+    (initrd (lambda (file-systems . rest)
+              (apply raw-initrd file-systems
+                     #:pre-mount pre-mount
+                     rest)))
     (initrd-modules initrd-modules)
     (firmware (list asahi-firmware))
     (file-systems (make-file-systems efi-uuid root-fs-label))
