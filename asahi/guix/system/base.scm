@@ -3,6 +3,7 @@
   #:use-module (asahi guix firmware)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
+  #:use-module (asahi guix packages guile-xyz)
   #:use-module (asahi guix packages linux)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
@@ -76,13 +77,15 @@
         %base-user-accounts))
 
 (define pre-mount
-  (with-imported-modules (source-module-closure
-                          '((asahi guix firmware)))
-    #~(begin
-        (display ":: Asahi Guix: Pre mount hook.\n")
-        (use-modules (asahi guix firmware))
-        (setup-firmware)
-        #t)))
+  (with-extensions (list guile-asahi-guix)
+    (with-imported-modules (source-module-closure
+                            '((asahi guix firmware)))
+      #~(begin
+          (display ":: Asahi Guix: Entering pre-mount hook ...\n")
+          (use-modules (asahi guix firmware))
+          (setup-firmware)
+          (display ":: Asahi Guix: Pre-mount hook done.\n")
+          #t))))
 
 (define* (make-operating-system #:key
                                 (efi-uuid #f)
