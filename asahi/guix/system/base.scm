@@ -81,6 +81,16 @@
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
                             '((asahi guix firmware)
+                              (asahi guix cpio)
+                              (gnu build activation)
+                              (gnu build file-systems)
+                              (gnu system uuid)
+                              (guix build syscalls)
+                              (guix build utils)
+                              (ice-9 pretty-print)
+                              (ice-9 textual-ports)
+                              (srfi srfi-1)
+                              (gnu build activation)
                               (guix build utils)
                               (guix cpio)))
       #~(begin
