@@ -1,3 +1,4 @@
+
 * Notes
 ** Packages
 Build Linux kernel with huge pages fixed.
@@ -34,5 +35,13 @@ Build the Asahi Guix operarating system image using the edge kernel.
   sudo mount /dev/nvme0n1p12 /mnt
   sudo mkdir --parents /mnt/boot/efi
   sudo mount /dev/nvme0n1p10 /mnt/boot/efi
+  sudo guix system init --load-path=. --system=aarch64-linux examples/asahi-guix.tmpl /mnt
   sudo guix system init --load-path=. --system=aarch64-linux examples/asahi-guix-edge.tmpl /mnt
+#+end_src
+
+Install test system with time machine.
+
+#+begin_src sh
+  sudo guix time-machine --channels=asahi/guix/channels.scm -- \
+       system init --load-path=. --system=aarch64-linux examples/asahi-guix.tmpl /mnt
 #+end_src
