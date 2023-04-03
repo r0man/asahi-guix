@@ -10,6 +10,7 @@
   #:use-module (gnu packages certs)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages)
   #:use-module (gnu services base)
@@ -77,7 +78,7 @@
         %base-user-accounts))
 
 (define pre-mount
-  (with-extensions (list guile-asahi-guix)
+  (with-extensions (list guile-asahi-guix guix)
     (with-imported-modules (source-module-closure
                             '((asahi guix firmware)))
       #~(begin
