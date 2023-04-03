@@ -78,9 +78,11 @@
         %base-user-accounts))
 
 (define pre-mount
-  (with-extensions (list guile-asahi-guix guix)
+  (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix firmware)))
+                            '((asahi guix firmware)
+                              (guix build utils)
+                              (guix cpio)))
       #~(begin
           (display ":: Asahi Guix: Entering pre-mount hook ...\n")
           (use-modules (asahi guix firmware))
