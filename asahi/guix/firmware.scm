@@ -38,19 +38,22 @@
 
 (define (detect-firmware-devices devices)
   (filter (lambda (device)
-            (let ((mount-point (mkdtemp "/tmp/detect-firmware-devices-XXXXXX")))
-              (unmount-directory mount-point)
-              (catch 'system-error
-                (lambda ()
-                  (mount device mount-point "vfat" MS_RDONLY)
-                  (let ((archive? (file-exists? (firmware-archive mount-point))))
+            (let ((template "/tmp/detect-firmware-devices-XXXXXX"))
+              (mkdir-p (dirname template))
+              (let ((mount-point (mkdtemp template)))
+                (unmount-directory mount-point)
+                (mkdir-p mount-point)
+                (catch 'system-error
+                  (lambda ()
+                    (mount device mount-point "vfat" MS_RDONLY)
+                    (let ((archive? (file-exists? (firmware-archive mount-point))))
+                      (unmount-directory mount-point)
+                      (rmdir mount-point)
+                      archive?))
+                  (lambda (key . args)
                     (unmount-directory mount-point)
                     (rmdir mount-point)
-                    archive?))
-                (lambda (key . args)
-                  (unmount-directory mount-point)
-                  (rmdir mount-point)
-                  #f))))
+                    #f)))))
           devices))
 
 (define* (read-efi-system-partition-uuid
