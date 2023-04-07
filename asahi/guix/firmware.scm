@@ -16,9 +16,6 @@
 (define %firmware-mount-point
   "/run/.system-firmware")
 
-(define %default-efi-device
-  "/dev/nvme0n1p7")
-
 (define %efi-system-partition-uuid-path
   "/proc/device-tree/chosen/asahi,efi-system-partition")
 
