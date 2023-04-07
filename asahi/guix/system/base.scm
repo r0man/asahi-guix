@@ -3,12 +3,10 @@
   #:use-module (asahi guix firmware)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
-  #:use-module (asahi guix packages guile-xyz)
   #:use-module (asahi guix packages linux)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages certs)
-  #:use-module (gnu packages disk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
@@ -78,29 +76,6 @@
          (supplementary-groups '("wheel" "audio" "netdev" "video")))
         %base-user-accounts))
 
-(define pre-mount
-  (with-extensions (list guile-asahi-guix)
-    (with-imported-modules (source-module-closure
-                            '((asahi guix firmware)
-                              (asahi guix cpio)
-                              (gnu build activation)
-                              (gnu build file-systems)
-                              (gnu system uuid)
-                              (guix build syscalls)
-                              (guix build utils)
-                              (ice-9 pretty-print)
-                              (ice-9 textual-ports)
-                              (srfi srfi-1)
-                              (gnu build activation)
-                              (guix build utils)
-                              (guix cpio)))
-      #~(begin
-          (display ":: Asahi Guix: Entering pre-mount hook ...\n")
-          (use-modules (asahi guix firmware))
-          (setup-firmware)
-          (display ":: Asahi Guix: Pre-mount hook done.\n")
-          #t))))
-
 (define* (make-operating-system #:key
                                 (efi-uuid #f)
                                 (host-name "asahi-guix")
@@ -121,11 +96,7 @@
                  (keyboard-layout keyboard-layout)))
     (kernel kernel)
     (kernel-arguments %kernel-arguments)
-    (initrd (lambda (file-systems . rest)
-              (apply raw-initrd file-systems
-                     #:helper-packages (list e2fsck/static fatfsck/static)
-                     #:pre-mount pre-mount
-                     rest)))
+    (initrd asahi-initrd)
     (initrd-modules initrd-modules)
     (firmware (list asahi-firmware))
     (file-systems (make-file-systems efi-uuid root-fs-label))

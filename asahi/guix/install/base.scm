@@ -1,4 +1,5 @@
 (define-module (asahi guix install base)
+  #:use-module (asahi guix system base)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
   #:use-module (asahi guix packages linux)
@@ -18,14 +19,8 @@
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
+    (initrd asahi-initrd)
     (initrd-modules asahi-initrd-modules)
-    (kernel-arguments
-     '("modprobe.blacklist=radeon"
-       ;; Add the 'net.ifnames' argument to prevent network interfaces
-       ;; from having really long names. This can cause an issue with
-       ;; wpa_supplicant when you try to connect to a wifi network.
-       "net.ifnames=0"
-       "quiet"))
     (services (cons* %channels-service (operating-system-user-services installation-os)))))
 
 asahi-installation-os

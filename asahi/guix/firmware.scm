@@ -92,6 +92,7 @@
 (define* (setup-firmware #:key
                          (esp-mount-point %esp-mount-point)
                          (firmware-mount-point %firmware-mount-point))
+  (display ":: Asahi Guix: Setting up firmware ...\n")
   (let ((esp-device (mount-efi-system-partition esp-mount-point)))
     (if esp-device
         (let ((firmware-archive (firmware-archive esp-mount-point)))

@@ -1,5 +1,12 @@
 (define-module (asahi guix initrd)
-  #:export (asahi-initrd-modules
+  #:use-module (gnu packages disk)
+  #:use-module (asahi guix packages guile-xyz)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu system linux-initrd)
+  #:use-module (guix gexp)
+  #:use-module (guix modules)
+  #:export (asahi-initrd
+            asahi-initrd-modules
             asahi-initrd-modules-edge))
 
 (define initrd-modules
@@ -86,3 +93,33 @@
    "apple-rtkit-helper"
    "dockchannel-hid"
    initrd-modules))
+
+(define helper-packages
+  (list e2fsck/static fatfsck/static))
+
+(define pre-mount
+  (with-extensions (list guile-asahi-guix)
+    (with-imported-modules (source-module-closure
+                            '((asahi guix firmware)
+                              (asahi guix cpio)
+                              (gnu build activation)
+                              (gnu build file-systems)
+                              (gnu system uuid)
+                              (guix build syscalls)
+                              (guix build utils)
+                              (ice-9 pretty-print)
+                              (ice-9 textual-ports)
+                              (srfi srfi-1)
+                              (gnu build activation)
+                              (guix build utils)
+                              (guix cpio)))
+      #~(begin
+          (use-modules (asahi guix firmware))
+          (setup-firmware)
+          #t))))
+
+(define (asahi-initrd file-systems . rest)
+  (apply raw-initrd file-systems
+         #:helper-packages (list e2fsck/static fatfsck/static)
+         #:pre-mount pre-mount
+         rest))
