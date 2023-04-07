@@ -8,6 +8,7 @@
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages certs)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages package-management)
@@ -122,7 +123,7 @@
     (kernel-arguments %kernel-arguments)
     (initrd (lambda (file-systems . rest)
               (apply raw-initrd file-systems
-                     #:helper-packages (list e2fsck/static)
+                     #:helper-packages (list e2fsck/static fatfsck-static)
                      #:pre-mount pre-mount
                      rest)))
     (initrd-modules initrd-modules)
