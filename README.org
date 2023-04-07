@@ -104,7 +104,7 @@ partition. In this example, the filesystem UUID is =9FBE-130E=.
 
 #+begin_example scheme
 (use-modules (asahi guix system base))
-(make-operating-system #:efi-uuid "9FBE-130E")
+(asahi-operating-system #:efi-uuid "9FBE-130E")
 #+end_example
 
 Build the Guix operating system.

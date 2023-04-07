@@ -27,7 +27,7 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (ice-9 optargs)
-  #:export (make-operating-system))
+  #:export (asahi-operating-system))
 
 (define %kernel-arguments
   (append '("net.ifnames=0") %default-kernel-arguments))
@@ -76,15 +76,16 @@
          (supplementary-groups '("wheel" "audio" "netdev" "video")))
         %base-user-accounts))
 
-(define* (make-operating-system #:key
-                                (efi-uuid #f)
-                                (host-name "asahi-guix")
-                                (initrd-modules asahi-initrd-modules)
-                                (kernel asahi-linux)
-                                (keyboard-layout %keyboard-layout)
-                                (locale "en_US.utf8")
-                                (root-fs-label "asahi-guix-root")
-                                (timezone "Europe/Berlin"))
+(define* (asahi-operating-system
+          #:key
+          (efi-uuid #f)
+          (host-name "asahi-guix")
+          (initrd-modules asahi-initrd-modules)
+          (kernel asahi-linux)
+          (keyboard-layout %keyboard-layout)
+          (locale "en_US.utf8")
+          (root-fs-label "asahi-guix-root")
+          (timezone "Europe/Berlin"))
   (operating-system
     (host-name host-name)
     (locale locale)

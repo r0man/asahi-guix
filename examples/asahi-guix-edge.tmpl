@@ -7,7 +7,7 @@
 (use-modules (asahi guix packages linux))
 (use-modules (asahi guix system base))
 
-(make-operating-system
+(asahi-operating-system
  #:efi-uuid "9FBE-130E"
  #:initrd-modules asahi-initrd-modules-edge
  #:kernel asahi-linux-edge)
