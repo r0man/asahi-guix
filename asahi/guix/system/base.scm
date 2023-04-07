@@ -123,7 +123,7 @@
     (kernel-arguments %kernel-arguments)
     (initrd (lambda (file-systems . rest)
               (apply raw-initrd file-systems
-                     #:helper-packages (list e2fsck/static fatfsck-static)
+                     #:helper-packages (list e2fsck/static fatfsck/static)
                      #:pre-mount pre-mount
                      rest)))
     (initrd-modules initrd-modules)
