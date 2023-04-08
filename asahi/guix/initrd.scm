@@ -12,7 +12,6 @@
 (define initrd-modules
   (list "dm-crypt"
         "hid-apple"
-        ;; "hid-generic"
         "nls_iso8859-1"
         "serpent_generic"
         "uas"
