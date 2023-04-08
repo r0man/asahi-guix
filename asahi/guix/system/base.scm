@@ -4,6 +4,7 @@
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
   #:use-module (asahi guix packages linux)
+  #:use-module (asahi guix substitutes)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)
   #:use-module (gnu packages certs)
@@ -61,12 +62,13 @@
          %base-packages))
 
 (define %services
-  (cons* (service network-manager-service-type)
-         (service wpa-supplicant-service-type)
-         (service openssh-service-type
-                  (openssh-configuration
-                   (openssh openssh-sans-x)))
-         %base-services))
+  (modify-services (cons* (service network-manager-service-type)
+                          (service openssh-service-type
+                                   (openssh-configuration
+                                    (openssh openssh-sans-x)))
+                          (service wpa-supplicant-service-type)
+                          %base-services)
+    (guix-service-type config => (append-substitutes config))))
 
 (define %users
   (cons (user-account
