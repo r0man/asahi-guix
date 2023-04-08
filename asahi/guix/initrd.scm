@@ -95,7 +95,9 @@
    initrd-modules))
 
 (define helper-packages
-  (list e2fsck/static fatfsck/static))
+  (list e2fsck/static
+        fatfsck/static
+        loadkeys-static))
 
 (define pre-mount
   (with-extensions (list guile-asahi-guix)
