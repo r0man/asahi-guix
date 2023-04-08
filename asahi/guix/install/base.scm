@@ -16,8 +16,8 @@
 
 (define %services
   (modify-services (append (operating-system-user-services installation-os)
-                           (list (service asahi-firmware-service-type)
-                                 %channels-service))
+                           (list %asahi-channels-service
+                                 (service asahi-firmware-service-type)))
     (guix-service-type config => (append-substitutes config))))
 
 (define asahi-installation-os
