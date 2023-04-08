@@ -1,6 +1,6 @@
 (define-module (asahi guix initrd)
-  #:use-module (gnu packages disk)
   #:use-module (asahi guix packages guile-xyz)
+  #:use-module (gnu packages disk)
   #:use-module (gnu packages linux)
   #:use-module (gnu system linux-initrd)
   #:use-module (guix gexp)
