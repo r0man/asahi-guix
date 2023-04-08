@@ -1,4 +1,4 @@
-(define-module (asahi guix install base)
+(define-module (asahi guix system install)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages linux)
   #:use-module (asahi guix services channels)
@@ -12,7 +12,7 @@
   #:use-module (gnu services)
   #:use-module (gnu system install)
   #:use-module (gnu system)
-  #:export (asahi-installation-os))
+  #:export (asahi-installation-operating-system))
 
 (define %services
   (modify-services (append (operating-system-user-services installation-os)
@@ -20,7 +20,7 @@
                                  (service asahi-firmware-service-type)))
     (guix-service-type config => (append-substitutes config))))
 
-(define asahi-installation-os
+(define asahi-installation-operating-system
   (operating-system
     (inherit installation-os)
     (kernel asahi-linux)
@@ -31,4 +31,4 @@
     (initrd-modules asahi-initrd-modules)
     (services %services)))
 
-asahi-installation-os
+asahi-installation-operating-system

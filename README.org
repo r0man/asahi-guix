@@ -171,24 +171,17 @@ installed on the EFI system partition by the Asahi Linux installer.
 
 **** Installation via USB stick
 
-Build the Guix installer disk image with the Asahi =stable= kernel.
+Build the Guix installer disk image with the Asahi Linux kernel.
 
 #+begin_src sh :results verbatim
   guix time-machine --channels=asahi/guix/channels.scm -- \
-       system image --load-path=. --image-type=efi-raw asahi/guix/install/base.scm
-#+end_src
-
-Build the Guix installer disk image with the Asahi =edge= kernel.
-
-#+begin_src sh :results verbatim
-  guix time-machine --channels=asahi/guix/channels.scm -- \
-       system image --load-path=. --image-type=efi-raw asahi/guix/install/edge.scm
+       system image --load-path=. --image-type=efi-raw asahi/guix/system/install.scm
 #+end_src
 
 Write the installer disk image to the USB stick at =/dev/sda=.
 
 #+begin_src sh :results verbatim
-  sudo dd if=/gnu/store/55x66d4j8c7gygffqx1hm4vam7ayq0jg-disk-image \
+  sudo dd if=/gnu/store/4cia1isqspzp1mz7qyqx4ay499cvhlq5-disk-image \
        of=/dev/sda bs=4M status=progress oflag=sync
 #+end_src
 
