@@ -16,6 +16,7 @@
     (inherit installation-os)
     (kernel asahi-linux)
     (firmware (list asahi-firmware))
+    (kernel-arguments '("debug"))
     (bootloader (bootloader-configuration
                  (bootloader grub-efi-bootloader)
                  (targets '("/dev/sda"))))
