@@ -1,6 +1,6 @@
 (define-module (asahi guix system base)
   #:use-module (asahi guix bootloader m1n1)
-  #:use-module (asahi guix firmware)
+  ;; #:use-module (asahi guix build firmware)
   #:use-module (asahi guix initrd)
   #:use-module (asahi guix packages firmware)
   #:use-module (asahi guix packages linux)

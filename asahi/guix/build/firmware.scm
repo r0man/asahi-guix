@@ -1,5 +1,5 @@
-(define-module (asahi guix firmware)
-  #:use-module (asahi guix cpio)
+(define-module (asahi guix build firmware)
+  #:use-module (asahi guix build cpio)
   #:use-module (gnu build activation)
   #:use-module (gnu build file-systems)
   #:use-module (gnu system uuid)

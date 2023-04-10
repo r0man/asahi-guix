@@ -101,8 +101,8 @@
 (define pre-mount
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix firmware)
-                              (asahi guix cpio)
+                            '((asahi guix build firmware)
+                              (asahi guix build cpio)
                               (gnu build activation)
                               (gnu build file-systems)
                               (gnu system uuid)

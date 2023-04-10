@@ -1,4 +1,4 @@
-(define-module (asahi guix cpio)
+(define-module (asahi guix build cpio)
   #:use-module (guix build utils)
   #:use-module (guix cpio)
   #:use-module (ice-9 binary-ports)

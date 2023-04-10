@@ -10,8 +10,8 @@
 (define (pre-mount _)
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix firmware)
-                              (asahi guix cpio)
+                            '((asahi guix build firmware)
+                              (asahi guix build cpio)
                               (gnu build activation)
                               (gnu build file-systems)
                               (gnu system uuid)
@@ -24,7 +24,7 @@
                               (guix build utils)
                               (guix cpio)))
       #~(begin
-          (use-modules (asahi guix firmware))
+          (use-modules (asahi guix build firmware))
           (display ":: Asahi Guix: Starting Asahi firmware service ...\n")
           (setup-firmware)
           (display ":: Asahi Guix: Asahi firmware service started.\n")
