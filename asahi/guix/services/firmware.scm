@@ -12,7 +12,9 @@
 (define (activate-firmware _)
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix build firmware)))
+                            '((asahi guix build firmware)
+                              ;; TODO: no code for module (guix cpio)
+                              (guix cpio)))
       #~(begin
           (use-modules (asahi guix build firmware))
           (display ":: Asahi Guix: Starting Asahi firmware service ...\n")
