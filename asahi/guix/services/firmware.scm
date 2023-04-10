@@ -7,22 +7,10 @@
   #:use-module (guix modules)
   #:export (asahi-firmware-service-type))
 
-(define (pre-mount _)
+(define (activate _)
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix build firmware)
-                              (asahi guix build cpio)
-                              (gnu build activation)
-                              (gnu build file-systems)
-                              (gnu system uuid)
-                              (guix build syscalls)
-                              (guix build utils)
-                              (ice-9 pretty-print)
-                              (ice-9 textual-ports)
-                              (srfi srfi-1)
-                              (gnu build activation)
-                              (guix build utils)
-                              (guix cpio)))
+                            '((asahi guix build firmware)))
       #~(begin
           (use-modules (asahi guix build firmware))
           (display ":: Asahi Guix: Starting Asahi firmware service ...\n")
@@ -34,6 +22,6 @@
   (service-type
    (name 'asahi-firmware)
    (extensions
-    (list (service-extension activation-service-type pre-mount)))
+    (list (service-extension activation-service-type activate)))
    (description "Service that loads the Apple Silicon firmware at boot time.")
    (default-value #f)))

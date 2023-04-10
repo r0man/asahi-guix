@@ -1,4 +1,5 @@
 (define-module (asahi guix initrd)
+  #:use-module (asahi guix build firmware)
   #:use-module (asahi guix packages guile-xyz)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages linux)
@@ -101,26 +102,14 @@
 (define pre-mount
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
-                            '((asahi guix build firmware)
-                              (asahi guix build cpio)
-                              (gnu build activation)
-                              (gnu build file-systems)
-                              (gnu system uuid)
-                              (guix build syscalls)
-                              (guix build utils)
-                              (ice-9 pretty-print)
-                              (ice-9 textual-ports)
-                              (srfi srfi-1)
-                              (gnu build activation)
-                              (guix build utils)
-                              (guix cpio)))
+                            '((asahi guix build firmware)))
       #~(begin
-          (use-modules (asahi guix firmware))
+          (use-modules (asahi guix build firmware))
           (setup-firmware)
           #t))))
 
 (define (asahi-initrd file-systems . rest)
   (apply raw-initrd file-systems
-         #:helper-packages (list e2fsck/static fatfsck/static)
+         #:helper-packages helper-packages
          #:pre-mount pre-mount
          rest))

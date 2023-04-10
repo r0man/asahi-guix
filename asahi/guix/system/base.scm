@@ -99,7 +99,6 @@
                  (keyboard-layout keyboard-layout)))
     (kernel kernel)
     (kernel-arguments %kernel-arguments)
-    (initrd asahi-initrd)
     (initrd-modules initrd-modules)
     (firmware (list asahi-firmware))
     (file-systems (make-file-systems efi-uuid root-fs-label))
