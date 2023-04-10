@@ -1,10 +1,11 @@
 (define-module (asahi guix services firmware)
+  #:use-module (asahi guix build firmware)
   #:use-module (asahi guix packages guile-xyz)
   #:use-module (gnu services base)
   #:use-module (gnu services)
   #:use-module (guix gexp)
-  #:use-module (srfi srfi-1)
   #:use-module (guix modules)
+  #:use-module (srfi srfi-1)
   #:export (asahi-firmware-service-type))
 
 (define (activate _)
