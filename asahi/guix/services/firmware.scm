@@ -6,9 +6,10 @@
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (srfi srfi-1)
-  #:export (asahi-firmware-service-type))
+  #:export (asahi-firmware-service-type
+            activate-firmware))
 
-(define (activate _)
+(define (activate-firmware _)
   (with-extensions (list guile-asahi-guix)
     (with-imported-modules (source-module-closure
                             '((asahi guix build firmware)))
@@ -23,6 +24,6 @@
   (service-type
    (name 'asahi-firmware)
    (extensions
-    (list (service-extension activation-service-type activate)))
+    (list (service-extension activation-service-type activate-firmware)))
    (description "Service that loads the Apple Silicon firmware at boot time.")
    (default-value #f)))
