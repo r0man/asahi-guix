@@ -26,6 +26,10 @@ Build the Asahi Guix operarating system image using the edge kernel.
   guix system image -L . --image-type=efi-raw asahi/guix/system/edge.scm
 #+end_src
 
+** Images
+#+begin_src sh
+  guix system image -L . asahi/guix/images/installer.scm
+#+end_src
 ** Installer
 
 #+begin_src sh
@@ -59,16 +63,16 @@ Build the Asahi Guix operarating system image using the edge kernel.
 
 #+begin_src sh
   qemu-system-aarch64 \
-    -m 2048 \
-    -cpu cortex-a57 -M virt,highmem=off  \
-    -drive file=/gnu/store/likzk72q4znlb2fnal0hfp2kbiclc0w3-image.qcow2,if=pflash,format=raw,readonly=on \
-    -serial telnet::4444,server,nowait \
-    -device virtio-blk-device,drive=hd0,serial="dummyserial" \
-    -device virtio-net-device,netdev=net0 \
-    -netdev user,id=net0 \
-    -vga none -device ramfb \
-    -device usb-ehci -device usb-kbd -device usb-mouse -usb \
-    -monitor stdio
+      -m 2048 \
+      -cpu cortex-a57 -M virt,highmem=off  \
+      -drive file=/gnu/store/likzk72q4znlb2fnal0hfp2kbiclc0w3-image.qcow2,if=pflash,format=raw,readonly=on \
+      -serial telnet::4444,server,nowait \
+      -device virtio-blk-device,drive=hd0,serial="dummyserial" \
+      -device virtio-net-device,netdev=net0 \
+      -netdev user,id=net0 \
+      -vga none -device ramfb \
+      -device usb-ehci -device usb-kbd -device usb-mouse -usb \
+      -monitor stdio
 #+end_src
 
 ** Test System
