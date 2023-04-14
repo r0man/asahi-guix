@@ -1,4 +1,5 @@
 (define-module (asahi guix images installer)
+  #:use-module (asahi guix system base)
   #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
@@ -12,50 +13,34 @@
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
   #:use-module (srfi srfi-26)
-  #:export (installer-barebones-os
-            installer-image-type
-            installer-barebones-raw-image))
+  #:export (asahi-installer-image-type
+            asahi-installer-os
+            asahi-installer-raw-image))
 
-(define installer-barebones-os
+(define asahi-installer-os
   (operating-system
-    (host-name "vignemale")
-    (timezone "Europe/Paris")
-    (locale "en_US.utf8")
-    (bootloader (bootloader-configuration
-                 (bootloader u-boot-pine64-lts-bootloader)
-                 (targets '("/dev/vda"))))
-    (initrd-modules '())
-    (kernel linux-libre-arm64-generic)
-    (file-systems (cons (file-system
-                          (device (file-system-label "my-root"))
-                          (mount-point "/")
-                          (type "ext4"))
-                        %base-file-systems))
-    (services (cons*
-               (service agetty-service-type
-                        (agetty-configuration
-                         (extra-options '("-L")) ; no carrier detect
-                         (baud-rate "115200")
-                         (term "vt100")
-                         (tty "ttyS0")))
-               (service dhcp-client-service-type)
-               (service ntp-service-type)
-               %base-services))
-    (packages (cons nss-certs %base-packages))))
+    (inherit (asahi-operating-system))
+    (file-systems
+     (cons (file-system
+             (device (file-system-label "my-root"))
+             (mount-point "/")
+             (type "ext4"))
+           %base-file-systems))))
 
-(define installer-image-type
+(define asahi-installer-image-type
   (image-type
-   (name 'installer-raw)
+   (name 'asahi-installer-raw)
    (constructor (lambda (os)
                   (image
                    (inherit (raw-with-offset-disk-image))
                    (operating-system os)
                    (platform aarch64-linux))))))
 
-(define installer-barebones-raw-image
+(define asahi-installer-raw-image
   (image
    (inherit
-    (os+platform->image installer-barebones-os aarch64-linux #:type installer-image-type))
-   (name 'installer-barebones-raw-image)))
+    (os+platform->image asahi-installer-os aarch64-linux
+                        #:type asahi-installer-image-type))
+   (name 'asahi-installer-raw-image)))
 
-installer-barebones-raw-image
+asahi-installer-raw-image
