@@ -1,9 +1,11 @@
 (define-module (asahi guix build bootloader m1n1)
-  #:export (install-m1n1-u-boot-grub)
   #:use-module (guix build utils)
   #:use-module (guix gexp)
   #:use-module (guix utils)
-  #:use-module (ice-9 binary-ports))
+  #:use-module (ice-9 binary-ports)
+  #:export (install-m1n1-u-boot-grub
+            update-m1n1
+            write-m1n1))
 
 (define (copy-bytes from to)
   (let ((result (get-u8 from)))
