@@ -2,7 +2,33 @@
   #:use-module (guix build json)
   #:use-module (guix build utils)
   #:use-module (guix records)
-  #:use-module (ice-9 pretty-print))
+  #:use-module (ice-9 pretty-print)
+  #:export (asahi-installer-os
+            asahi-installer-os-boot-object
+            asahi-installer-os-default-os-name
+            asahi-installer-os-desktop
+            asahi-installer-os-minimal
+            asahi-installer-os-name
+            asahi-installer-os-next-object
+            asahi-installer-os-package
+            asahi-installer-os-partitions
+            asahi-installer-os-read-data
+            asahi-installer-os-supported-fw
+            asahi-installer-os-write-data
+            asahi-installer-os?
+            asahi-installer-partition make-asahi-installer-partition
+            asahi-installer-partition-copy-firmware?
+            asahi-installer-partition-copy-installer-data?
+            asahi-installer-partition-expand
+            asahi-installer-partition-format
+            asahi-installer-partition-image
+            asahi-installer-partition-name
+            asahi-installer-partition-size
+            asahi-installer-partition-source
+            asahi-installer-partition-type
+            asahi-installer-partition-volume-id
+            asahi-installer-partition?
+            make-asahi-installer-os))
 
 (define-record-type* <asahi-installer-os>
   asahi-installer-os make-asahi-installer-os
@@ -67,12 +93,12 @@
   (list asahi-installer-os-minimal
         asahi-installer-os-desktop))
 
-(define (read-installer-data file)
+(define (asahi-installer-os-read-data file)
   "Read the Asahi Guix installer data from FILE."
   (call-with-input-file file
     (lambda (in) (read-json in))))
 
-(define (write-installer-data file data)
+(define (asahi-installer-os-write-data file data)
   "Write the Asahi Guix installer data to FILE."
   (mkdir-p (dirname file))
   (call-with-output-file file
