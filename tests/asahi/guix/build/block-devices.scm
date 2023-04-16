@@ -3,9 +3,12 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64))
 
-;; (test-begin "test-block-devices")
+(define suite "test-asahi-guix-build-block-devices")
 
-;; (test-assert "list block devices"
-;;   (every block-device? (block-devices)))
+(test-begin suite)
 
-;; (test-end)
+(test-skip 1)
+(test-assert "list block devices"
+  (every block-device? (block-devices)))
+
+(test-end suite)

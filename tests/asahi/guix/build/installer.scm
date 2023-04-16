@@ -8,14 +8,19 @@
 
 (test-begin suite)
 
-(test-assert "asahi-installer-os-read-data"
-  (call-with-temporary-output-file
-   (lambda (file port)
-     (asahi-installer-os-write-data file 1))))
+(test-assert "asahi-installer-build"
+  (asahi-installer-build %asahi-installer))
 
-(test-assert "asahi-installer-os-write-data"
+(test-equal "asahi-installer-read-data"
+  %asahi-installer
   (call-with-temporary-output-file
    (lambda (file port)
-     (asahi-installer-os-write-data file 1))))
+     (asahi-installer-write-data %asahi-installer file)
+     (asahi-installer-read-data file))))
+
+(test-assert "asahi-installer-write-data"
+  (call-with-temporary-output-file
+   (lambda (file port)
+     (asahi-installer-write-data %asahi-installer file))))
 
 (test-end suite)
