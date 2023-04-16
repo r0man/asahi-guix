@@ -1,4 +1,4 @@
-(define-module (asahi guix installer)
+(define-module (asahi guix build installer)
   #:use-module (guix build json)
   #:use-module (guix build utils)
   #:use-module (guix records)
