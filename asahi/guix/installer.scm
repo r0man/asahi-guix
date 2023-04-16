@@ -29,47 +29,39 @@
   (type asahi-installer-partition-type (default #f))
   (volume-id asahi-installer-partition-volume-id (default #f)))
 
+(define esp-partition
+  (asahi-installer-partition
+   (name "EFI")
+   (type "EFI")
+   (size "500MB")
+   (format "fat")
+   (volume-id "0x2abf9f91")
+   (copy-firmware? #t)
+   (copy-installer-data? #t)
+   (source "esp")))
+
+(define root-partition
+  (asahi-installer-partition
+   (name "Root")
+   (type "Linux")
+   (size "8GB")
+   (expand #t)
+   (image "root.img")))
+
 (define asahi-installer-os-minimal
   (asahi-installer-os
    (name "Asahi Guix Minimal")
    (package "asahi-base-20221122-4.zip")
-   (partitions
-    (list (asahi-installer-partition
-           (name "EFI")
-           (type "EFI")
-           (size "500MB")
-           (format "fat")
-           (volume-id "0x2abf9f91")
-           (copy-firmware? #t)
-           (copy-installer-data? #t)
-           (source "esp"))
-          (asahi-installer-partition
-           (name "Root")
-           (type "Linux")
-           (size "8GB")
-           (expand #t)
-           (image "root.img"))))))
+   (partitions (list esp-partition root-partition))))
 
 (define asahi-installer-os-desktop
   (asahi-installer-os
    (name "Asahi Guix Desktop")
    (package "asahi-desktop-20221122-4.zip")
-   (partitions
-    (list (asahi-installer-partition
-           (name "EFI")
-           (type "EFI")
-           (size "500MB")
-           (format "fat")
-           (volume-id "0x2abf9f91")
-           (copy-firmware? #t)
-           (copy-installer-data? #t)
-           (source "esp"))
-          (asahi-installer-partition
-           (name "Root")
-           (type "Linux")
-           (size "16GB")
-           (expand #t)
-           (image "root.img"))))))
+   (partitions (list esp-partition
+                     (asahi-installer-partition
+                      (inherit root-partition)
+                      (size "16GB"))))))
 
 (define asahi-installer-oses
   (list asahi-installer-os-minimal
