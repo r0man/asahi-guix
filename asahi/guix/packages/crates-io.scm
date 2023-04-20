@@ -22,7 +22,8 @@
      (build-system cargo-build-system)
      (arguments
       `(#:cargo-inputs
-        (("rust-bindgen" ,rust-bindgen-0.59))
+        (("rust-bindgen" ,rust-bindgen-0.59)
+         ("rust-env-logger" ,rust-env-logger-0.9))
         #:phases
         (modify-phases %standard-phases
           (add-before 'check 'disable-commandline-multiple-headers-test
