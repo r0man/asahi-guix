@@ -33,6 +33,11 @@
 ;;;
 ;;;; Code:
 
+(use-modules (ice-9 getopt-long)
+             (ice-9 pretty-print)
+             (srfi srfi-26)
+             (srfi srfi-64))
+
 (define (show-help)
   (display "Usage:
                          test-driver --test-name=NAME --log-file=PATH --trs-file=PATH

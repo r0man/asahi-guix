@@ -1,0 +1,30 @@
+(use-modules
+  (guix packages)
+  ((guix licenses) #:prefix license:)
+  (guix download)
+  (guix build-system gnu)
+  (gnu packages)
+  (gnu packages autotools)
+  (gnu packages guile)
+  (gnu packages guile-xyz)
+  (gnu packages pkg-config)
+  (gnu packages texinfo))
+
+(package
+  (name "guile-asahi-guix")
+  (version "0.1")
+  (source "./guile-asahi-guix-0.1.tar.gz")
+  (build-system gnu-build-system)
+  (arguments `())
+  (native-inputs
+    `(("autoconf" ,autoconf)
+      ("automake" ,automake)
+      ("pkg-config" ,pkg-config)
+      ("texinfo" ,texinfo)))
+  (inputs `(("guile" ,guile-3.0)))
+  (propagated-inputs `())
+  (synopsis "Asahi Guix")
+  (description "Asahi Linux on GNU Guix")
+  (home-page "https://github.com/r0man/asahi-guix")
+  (license license:gpl3+))
+

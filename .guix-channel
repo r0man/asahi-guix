@@ -1,4 +1,5 @@
 ;; -*- mode: scheme; -*-
 (channel
  (version 0)
+ (directory "src")
  (url "https://github.com/r0man/asahi-guix.git"))

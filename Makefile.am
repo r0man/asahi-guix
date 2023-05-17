@@ -1,4 +1,4 @@
-bin_SCRIPTS =
+bin_SCRIPTS = 
 
 # Handle substitution of fully-expanded Autoconf variables.
 do_subst = $(SED)					\
@@ -32,36 +32,36 @@ SUFFIXES = .scm .go
 .scm.go:
 	$(AM_V_GEN)$(top_builddir)/pre-inst-env $(GUILE_TOOLS) compile $(GUILE_WARNINGS) -o "$@" "$<"
 
-NOCOMP_SOURCES = asahi/guix/packages/defconfig.main \
-		 asahi/guix/packages/defconfig.edge \
-		 asahi/guix/substitutes.asahi-guix.org.pub
-
-SOURCES = asahi/guix/bootloader/m1n1.scm \
-          asahi/guix/packages/linux.scm \
-          asahi/guix/packages/crates-io.scm \
-          asahi/guix/packages/gl.scm \
-          asahi/guix/packages/guile-xyz.scm \
-          asahi/guix/packages/audio.scm \
-          asahi/guix/packages/firmware.scm \
-          asahi/guix/packages/rust.scm \
-          asahi/guix/packages/bootloader.scm \
-          asahi/guix/packages/jemalloc.scm \
-          asahi/guix/packages/misc.scm \
-          asahi/guix/build/bootloader/m1n1.scm \
-          asahi/guix/build/block-devices.scm \
-          asahi/guix/build/firmware.scm \
-          asahi/guix/system/desktop.scm \
-          asahi/guix/system/base.scm \
-          asahi/guix/system/install.scm \
-          asahi/guix/services/channels.scm \
-          asahi/guix/services/firmware.scm \
-          asahi/guix/services/udev.scm \
-          asahi/guix/services/console-font.scm \
-          asahi/guix/channels.scm \
-          asahi/guix/initrd.scm \
-          asahi/guix/udev.scm \
-          asahi/guix/transformations.scm \
-          asahi/guix/substitutes.scm
+SOURCES = src/asahi/guix/services/firmware.scm \
+          src/asahi/guix/services/channels.scm \
+          src/asahi/guix/services/udev.scm \
+          src/asahi/guix/services/console-font.scm \
+          src/asahi/guix/packages/guile-xyz.scm \
+          src/asahi/guix/packages/defconfig.edge \
+          src/asahi/guix/packages/crates-io.scm \
+          src/asahi/guix/packages/firmware.scm \
+          src/asahi/guix/packages/misc.scm \
+          src/asahi/guix/packages/audio.scm \
+          src/asahi/guix/packages/gnuzilla.scm \
+          src/asahi/guix/packages/jemalloc.scm \
+          src/asahi/guix/packages/rust.scm \
+          src/asahi/guix/packages/linux.scm \
+          src/asahi/guix/packages/bootloader.scm \
+          src/asahi/guix/packages/gl.scm \
+          src/asahi/guix/packages/defconfig.main \
+          src/asahi/guix/system/install.scm \
+          src/asahi/guix/system/desktop.scm \
+          src/asahi/guix/system/base.scm \
+          src/asahi/guix/bootloader/m1n1.scm \
+          src/asahi/guix/build/bootloader/m1n1.scm \
+          src/asahi/guix/build/firmware.scm \
+          src/asahi/guix/build/block-devices.scm \
+          src/asahi/guix/substitutes.scm \
+          src/asahi/guix/initrd.scm \
+          src/asahi/guix/channels.scm \
+          src/asahi/guix/substitutes.asahi-guix.org.pub \
+          src/asahi/guix/udev.scm \
+          src/asahi/guix/transformations.scm
 
 TESTS = tests/asahi/guix/build/block-devices.scm
 
@@ -79,23 +79,38 @@ AM_SCM_LOG_FLAGS = --no-auto-compile -L "$(top_srcdir)"
 
 AM_TESTS_ENVIRONMENT = abs_top_srcdir="$(abs_top_srcdir)"
 
-info_TEXINFOS = doc/ashai-guix.texi
+info_TEXINFOS = doc/version.texi \
+                doc/ashai-guix.texi
 dvi: # Don't build dvi docs
 
-EXTRA_DIST += NOTES.org \
-              README.org \
-              README \
-              COPYING \
+EXTRA_DIST += ChangeLog \
+              AUTHORS \
+              NEWS \
               HACKING \
-              .guix-authorizations \
-              .guix-channel \
-              .gitignore \
-              manifest.scm \
+              COPYING \
+              README \
+              NOTES.org \
+              doc/stamp-vti \
+              doc/.dirstamp \
+              doc/version.info \
+              doc/guile-ashai-guix.info \
+              pre-inst-env.in \
+              Makefile.am \
+              configure.ac \
+              build-aux/texinfo.tex \
+              build-aux/mdate-sh \
+              build-aux/test-driver.scm \
+              build-aux/install-sh \
+              build-aux/missing \
+              .github/workflows/x86_64-linux-gnu.yml \
+              .github/workflows/aarch64-linux-gnu.yml \
+              .github/FUNDING.yml \
               share/systems/asahi-guix.tmpl \
               share/systems/asahi-guix-edge.tmpl \
-              .github/workflows/aarch64-linux-gnu.yml \
-              .github/workflows/x86_64-linux-gnu.yml \
-              .github/FUNDING.yml \
+              .gitignore \
+              .guix-channel \
+              .guix-authorizations \
+              hall.scm \
               build-aux/test-driver.scm \
               $(TESTS)
 

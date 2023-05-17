@@ -9,7 +9,7 @@ By far the easiest way to hack on ashai-guix is to develop using Guix:
 #+BEGIN_SRC bash
   # Obtain the source code
   cd /path/to/source-code
-  guix shell -f manifest.scm
+  guix shell -Df guix.scm
   # In the new shell, run:
   autoreconf -vif && ./configure && make check
 #+END_SRC
