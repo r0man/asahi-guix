@@ -1,5 +1,6 @@
 (define-module (asahi guix bootloader m1n1)
   #:use-module (asahi guix build bootloader m1n1)
+  #:use-module (asahi guix build modules)
   #:use-module (asahi guix packages bootloader)
   #:use-module (asahi guix packages guile-xyz)
   #:use-module (asahi guix packages linux)
@@ -12,11 +13,9 @@
 
 (define install-m1n1-u-boot-grub
   (with-extensions (list guile-zlib)
-    (with-imported-modules (source-module-closure
-                            '((asahi guix build bootloader m1n1)))
-      #~(lambda (bootloader efi-dir mount-point)
-          (use-modules (asahi guix build bootloader m1n1))
-          (install-m1n1-u-boot-grub bootloader efi-dir mount-point)))))
+    #~(lambda (bootloader efi-dir mount-point)
+        (use-modules (asahi guix build bootloader m1n1))
+        (install-m1n1-u-boot-grub bootloader efi-dir mount-point))))
 
 (define-public m1n1-u-boot-grub-bootloader
   (efi-bootloader-chain

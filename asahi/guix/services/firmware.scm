@@ -1,5 +1,6 @@
 (define-module (asahi guix services firmware)
   #:use-module (asahi guix build firmware)
+  #:use-module (asahi guix build modules)
   #:use-module (asahi guix packages guile-xyz)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages linux)
@@ -20,7 +21,9 @@
 (define (activate-firmware config)
   (let ((cpio (asahi-firmware-config-cpio config))
         (util-linux (asahi-firmware-config-util-linux config)))
-    (with-imported-modules (source-module-closure '((asahi guix build firmware)))
+    (with-imported-modules (source-module-closure
+                            '((asahi guix build firmware))
+                            #:select? import-asahi-module?)
       #~(begin
           (use-modules (asahi guix build firmware))
           (setup-firmware
