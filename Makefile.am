@@ -1,4 +1,4 @@
-bin_SCRIPTS = 
+bin_SCRIPTS =
 
 # Handle substitution of fully-expanded Autoconf variables.
 do_subst = $(SED)					\
@@ -32,12 +32,15 @@ SUFFIXES = .scm .go
 .scm.go:
 	$(AM_V_GEN)$(top_builddir)/pre-inst-env $(GUILE_TOOLS) compile $(GUILE_WARNINGS) -o "$@" "$<"
 
+NOCOMP_SOURCES = src/asahi/guix/packages/defconfig.main \
+		 src/asahi/guix/packages/defconfig.edge \
+		 src/asahi/guix/substitutes.asahi-guix.org.pub
+
 SOURCES = src/asahi/guix/services/firmware.scm \
           src/asahi/guix/services/channels.scm \
           src/asahi/guix/services/udev.scm \
           src/asahi/guix/services/console-font.scm \
           src/asahi/guix/packages/guile-xyz.scm \
-          src/asahi/guix/packages/defconfig.edge \
           src/asahi/guix/packages/crates-io.scm \
           src/asahi/guix/packages/firmware.scm \
           src/asahi/guix/packages/misc.scm \
@@ -48,7 +51,6 @@ SOURCES = src/asahi/guix/services/firmware.scm \
           src/asahi/guix/packages/linux.scm \
           src/asahi/guix/packages/bootloader.scm \
           src/asahi/guix/packages/gl.scm \
-          src/asahi/guix/packages/defconfig.main \
           src/asahi/guix/system/install.scm \
           src/asahi/guix/system/desktop.scm \
           src/asahi/guix/system/base.scm \
@@ -59,7 +61,6 @@ SOURCES = src/asahi/guix/services/firmware.scm \
           src/asahi/guix/substitutes.scm \
           src/asahi/guix/initrd.scm \
           src/asahi/guix/channels.scm \
-          src/asahi/guix/substitutes.asahi-guix.org.pub \
           src/asahi/guix/udev.scm \
           src/asahi/guix/transformations.scm
 
