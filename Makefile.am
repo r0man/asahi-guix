@@ -80,8 +80,7 @@ AM_SCM_LOG_FLAGS = --no-auto-compile -L "$(top_srcdir)"
 
 AM_TESTS_ENVIRONMENT = abs_top_srcdir="$(abs_top_srcdir)"
 
-info_TEXINFOS = doc/version.texi \
-                doc/ashai-guix.texi
+info_TEXINFOS = doc/ashai-guix.texi
 dvi: # Don't build dvi docs
 
 EXTRA_DIST += ChangeLog \
