@@ -2,7 +2,6 @@
   #:use-module (asahi guix build bootloader m1n1)
   #:use-module (asahi guix build modules)
   #:use-module (asahi guix packages bootloader)
-  #:use-module (asahi guix packages guile-xyz)
   #:use-module (asahi guix packages linux)
   #:use-module (gnu bootloader grub)
   #:use-module (gnu bootloader)

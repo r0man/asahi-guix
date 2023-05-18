@@ -1,7 +1,6 @@
 (define-module (asahi guix services firmware)
   #:use-module (asahi guix build firmware)
   #:use-module (asahi guix build modules)
-  #:use-module (asahi guix packages guile-xyz)
   #:use-module (gnu packages cpio)
   #:use-module (gnu packages linux)
   #:use-module (gnu services base)

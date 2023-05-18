@@ -1,6 +1,5 @@
 (define-module (asahi guix initrd)
   #:use-module (asahi guix build firmware)
-  #:use-module (asahi guix packages guile-xyz)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages linux)
   #:use-module (gnu system linux-initrd)

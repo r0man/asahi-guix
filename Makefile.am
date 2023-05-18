@@ -40,7 +40,6 @@ SOURCES = asahi/guix/bootloader/m1n1.scm \
           asahi/guix/packages/linux.scm \
           asahi/guix/packages/crates-io.scm \
           asahi/guix/packages/gl.scm \
-          asahi/guix/packages/guile-xyz.scm \
           asahi/guix/packages/audio.scm \
           asahi/guix/packages/firmware.scm \
           asahi/guix/packages/rust.scm \
