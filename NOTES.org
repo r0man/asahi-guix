@@ -1,17 +1,4 @@
 * Notes
-** Packages
-Build Linux kernel with huge pages fixed.
-
-#+begin_src sh :results verbatim
-  guix build -L . asahi-linux -v 5 -K --with-input=jemalloc=jemalloc@5.3.0
-#+end_src
-
-Build =mesa-utils= with =asahi-mesa=.
-
-#+begin_src sh :results verbatim
-  guix build -L . mesa-utils -v 5 -K --with-input=jemalloc=jemalloc@5.3.0 --with-input=mesa=asahi-mesa
-#+end_src
-
 ** Systems
 
 Build the Asahi Guix operarating system image.

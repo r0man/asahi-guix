@@ -1,21 +1,16 @@
 (define-module (asahi guix transformations)
-  #:use-module ((asahi guix packages jemalloc) #:prefix next:)
+  #:use-module ((gnu packages gl) #:prefix gl:)
+  #:use-module ((gnu packages rust) #:prefix rust:)
   #:use-module (asahi guix packages gl)
-  #:use-module (gnu packages gl)
-  #:use-module (gnu packages jemalloc)
+  #:use-module (asahi guix packages rust)
   #:use-module (guix packages)
   #:export (replace-asahi
-            replace-jemalloc
-            replace-libdrm
             replace-mesa))
 
 (define replace-asahi
   (package-input-rewriting
-   `((,jemalloc . ,next:jemalloc)
-     (,mesa . ,asahi-mesa))))
-
-(define replace-jemalloc
-  (package-input-rewriting `((,jemalloc . ,next:jemalloc))))
+   `((,gl:mesa . ,asahi-mesa)
+     (,rust:rust . ,rust))))
 
 (define replace-mesa
-  (package-input-rewriting `((,mesa . ,asahi-mesa))))
+  (package-input-rewriting `((,gl:mesa . ,asahi-mesa))))

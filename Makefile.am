@@ -44,7 +44,6 @@ SOURCES = src/asahi/guix/bootloader/m1n1.scm \
           src/asahi/guix/packages/firmware.scm \
           src/asahi/guix/packages/rust.scm \
           src/asahi/guix/packages/bootloader.scm \
-          src/asahi/guix/packages/jemalloc.scm \
           src/asahi/guix/packages/misc.scm \
           src/asahi/guix/build/bootloader/m1n1.scm \
           src/asahi/guix/build/block-devices.scm \

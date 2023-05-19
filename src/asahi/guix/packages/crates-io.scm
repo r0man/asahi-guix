@@ -1,6 +1,6 @@
 (define-module (asahi guix packages crates-io)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (asahi guix packages jemalloc)
+  #:use-module (asahi guix packages rust)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages llvm)
   #:use-module (guix build-system cargo)
@@ -8,7 +8,7 @@
   #:use-module (guix packages))
 
 (define-public rust-bindgen-cli
-  (replace-jemalloc
+  (replace-rust
    (package
      (name "rust-bindgen-cli")
      (version "0.59.2")
