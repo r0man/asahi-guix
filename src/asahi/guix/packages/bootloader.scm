@@ -9,10 +9,10 @@
   #:use-module (guix utils))
 
 (define-public asahi-m1n1
-  (let ((commit "a024101b757a43fa7af0c06344e46c553743e21a"))
+  (let ((commit "88df8a63354f9987224ce507f7952abb3ec97258"))
     (package
       (name "asahi-m1n1")
-      (version (git-version "1.2.6" "0" commit))
+      (version (git-version "1.2.9" "0" commit))
       (source
        (origin
          (method git-fetch)
@@ -21,7 +21,7 @@
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0vd5gwp11fza961f3413amnaq0x2b5nsv2ma2q30mqjia2x6w8cz"))))
+          (base32 "1zdrfyblfqwjac7j58vmgq28vkljkrik7vkbcbxbyrf4qil3giyc"))))
       (build-system gnu-build-system)
       (supported-systems (list "aarch64-linux"))
       (arguments
