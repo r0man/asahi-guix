@@ -70,16 +70,24 @@
     (source (package-source asahi-mesa))))
 
 (define-public asahi-mesa-utils
+  ;; TODO: glxinfo and friends are not compiled
   (package/inherit mesa-utils
     (name "asahi-mesa-utils")
-    (version "8.5.0")
+    (version "9.0.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://archive.mesa3d.org/demos/" version
-                           "/mesa-demos-" version ".tar.bz2"))
-       (sha256 (base32 "1hdaf7pnh5h4f16pzrxqw3g5s37r5dkimsy46pv316phh05dz8nf"))))
+       (uri (string-append "https://archive.mesa3d.org/demos"
+                           "/mesa-demos-" version ".tar.xz"))
+       (sha256 (base32 "0ss9xpqykwfzkhr55nbfml61dsxz4dgpl9fxxgvil1bvdb9a6iih"))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "ninja" "install"))))))
     (inputs
      (modify-inputs (package-inputs mesa-utils)
        (replace "mesa" asahi-mesa)))))
