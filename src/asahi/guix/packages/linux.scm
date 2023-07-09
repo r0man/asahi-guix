@@ -40,14 +40,18 @@
   (make-asahi-linux-source
    "asahi-6.2-12" "0ips1gx627v4wkskam1xzkdlnv3f0f0vi4z50cznrnh29sbj8y2s"))
 
+(define asahi-linux-source-6.3-8
+  (make-asahi-linux-source
+   "asahi-6.3-8" "13vayb1z09w7m2m4njwcfn7llpy4dm2rx0qadwyhmgcx13jl75zz"))
+
 (define* (make-asahi-linux name
                            #:key
                            (defconfig (local-file "defconfig.main"))
                            (extra-options %default-extra-linux-options)
                            (extra-version #f)
                            (linux linux-libre-arm64-generic)
-                           (source asahi-linux-source-6.2.11)
-                           (version "6.2.11"))
+                           (source asahi-linux-source-6.3-8)
+                           (version "6.3.0"))
   (let ((base (customize-linux
                #:configs (config->string (or extra-options '()))
                #:defconfig defconfig
