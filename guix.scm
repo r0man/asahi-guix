@@ -1,6 +1,7 @@
 (use-modules
  ((guix licenses) #:prefix license:)
  (gnu packages autotools)
+ (gnu packages disk)
  (gnu packages gettext)
  (gnu packages guile)
  (gnu packages guile-xyz)
@@ -30,11 +31,12 @@
                   (list ".git" ".dir-locals.el" "guix.scm"))))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf
+     (list (current-guix)
+           autoconf
            automake
            gettext
            guile-hall
-           guix
+           parted
            pkg-config
            texinfo))
     (inputs (list guile-3.0 util-linux))
