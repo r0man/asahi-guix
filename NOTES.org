@@ -76,3 +76,7 @@ Build the Asahi Guix operarating system image using the edge kernel.
   guix time-machine --channels=src/asahi/guix/channels.scm -- \
        system build --load-path=src --system=aarch64-linux share/systems/asahi-guix.tmpl
 #+end_src
+
+** Install Guix on Hetzner Cloud
+
+https://gist.github.com/kristianlm/089a6759a74dcd2e6f702847cf919ed2
