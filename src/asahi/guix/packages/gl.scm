@@ -14,10 +14,10 @@
   #:use-module (guix utils))
 
 (define-public asahi-mesa
-  (let ((commit "73ceeccbee958ea51e01ad3cf132d932092fad30"))
+  (let ((commit "4acd685189c341c66a60d947384f2c9ef5b84b9d"))
     (package/inherit mesa
       (name "asahi-mesa")
-      (version (git-version "20230615" "0" commit))
+      (version (git-version "20230904" "0" commit))
       (source
        (origin
          (method git-fetch)
@@ -26,7 +26,7 @@
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1mwhm2qqrrbw5mdf1j75sxc4x9wjxa170n138jw83nzh9g3241sq"))))
+          (base32 "0219rc1nbqsz1v0psz588yh64ap3ga4k02hyf6vzkx8lbz6xf5w4"))))
       (arguments
        (substitute-keyword-arguments (package-arguments mesa)
          ((#:configure-flags flags)
