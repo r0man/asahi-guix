@@ -8,7 +8,7 @@
 (define-public alsa-ucm-conf-asahi
   (package
     (name "alsa-ucm-conf-asahi")
-    (version "1")
+    (version "4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -16,7 +16,7 @@
                     version ".tar.gz"))
               (sha256
                (base32
-                "0rw16mk0msj518aq8prjhm0m9fm3x26zrxz7wnc2nxnw52vzbdaa"))))
+                "1hrhf3sry2jb5maj1s9mm0bn7c4pfnmlv93aq2dybcsksp591fir"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
