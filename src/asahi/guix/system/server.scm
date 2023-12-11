@@ -32,7 +32,7 @@
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix packages)
-  #:export (asahi-guix-operating-system))
+  #:export (asahi-guix-server-system))
 
 (define %keyboard-options
   '("caps:ctrl_modifier"
@@ -318,7 +318,7 @@
 (define %swap-devices
   (list (swap-space (target "/swapfile"))))
 
-(define asahi-server-operating-system
+(define asahi-guix-server-system
   (operating-system
     (host-name "asahi-guix")
     (timezone "Etc/UTC")
@@ -330,4 +330,4 @@
     (services %services)
     (swap-devices %swap-devices)))
 
-asahi-server-operating-system
+asahi-guix-server-system
