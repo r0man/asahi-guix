@@ -1,7 +1,0 @@
-;; -*- mode: scheme; -*-
-(authorizations
- (version 0)
- (("5DE3 E050 9C47 EA3C F04A  42D3 4AEE 18F8 3AFD EB23"
-   (name "github-web-flow"))
-  ("D226 A339 D8DF 4481 5DDE  0CA0 3DDA 5252 7D2A C199"
-   (name "r0man"))))
